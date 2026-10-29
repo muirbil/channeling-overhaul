@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "channeling_overhaul:discharge",
+    "channeling_overhaul:discharge_chain",
+    "channeling_overhaul:discharge_water"
+  ]
+}

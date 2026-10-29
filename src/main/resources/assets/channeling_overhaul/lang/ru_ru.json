@@ -1,0 +1,49 @@
+{
+  "tooltip.channeling_overhaul.charge": "Заряд: %s / %s",
+
+  "commands.channeling_overhaul.charge.no_trident": "Возьмите в основную руку трезубец с чарами «%s»",
+  "commands.channeling_overhaul.charge.get": "%s %s: заряд %s / %s, радиус %s бл. (%s)",
+  "commands.channeling_overhaul.charge.config.server": "серверный конфиг",
+  "commands.channeling_overhaul.charge.config.defaults": "значения по умолчанию, серверный конфиг не загружен",
+  "commands.channeling_overhaul.charge.set": "Заряд установлен: %s / %s",
+  "commands.channeling_overhaul.charge.clear": "Заряд сброшен",
+
+  "commands.channeling_overhaul.station.no_trident": "В радиусе %2$s блоков нет воткнутого трезубца с чарами «%1$s»",
+  "commands.channeling_overhaul.station.trident": "%s %s в %s, R = %s",
+  "commands.channeling_overhaul.station.sky": "S = %s: %s, осадки в биоме: %s, погода: %s",
+  "commands.channeling_overhaul.station.sky.open": "небо открыто",
+  "commands.channeling_overhaul.station.sky.covered": "неба не видно",
+  "commands.channeling_overhaul.station.precipitation.rain": "дождь",
+  "commands.channeling_overhaul.station.precipitation.snow": "снег",
+  "commands.channeling_overhaul.station.precipitation.none": "нет",
+  "commands.channeling_overhaul.station.weather.clear": "ясно",
+  "commands.channeling_overhaul.station.weather.rain": "осадки",
+  "commands.channeling_overhaul.station.weather.thunder": "гроза",
+  "commands.channeling_overhaul.station.antenna": "A = %s = min(%s, 1 + медь %s (%s бл.) + громоотводы %s (%s) + вода %s (%s ист.))",
+  "commands.channeling_overhaul.station.inflow": "I = S·A = %s заряда/с, заряд %s / %s",
+
+  "entity.channeling_overhaul.discharge_bolt": "Молния разряда",
+
+  "subtitles.channeling_overhaul.trident.full_charge": "Трезубец заряжен",
+  "subtitles.channeling_overhaul.discharge.chain": "Разряд перескакивает",
+  "subtitles.channeling_overhaul.discharge.weak": "Разряд трещит",
+  "subtitles.channeling_overhaul.discharge.horn": "Разряд гремит",
+  "subtitles.channeling_overhaul.discharge.distant_thunder": "Далёкий гром",
+
+  "chat.channeling_overhaul.discharge.debug": "Разряд в %s: Q = %s, M = %s, D = %s",
+  "chat.channeling_overhaul.chain.debug": "Цепь, прыжок %s в %s: база %s, M = %s, D = %s",
+  "chat.channeling_overhaul.water.debug": "Вода в %s на %s бл.: база %s, M = %s, D = %s",
+  "chat.channeling_overhaul.lightning.debug": "Молния в %s бл.: +%s, заряд %s / %s",
+  "chat.channeling_overhaul.lightning.debug.rod": "Молния в громоотвод в %s бл.: +%s, заряд %s / %s",
+  "chat.channeling_overhaul.windup.debug": "Замах: +%s за %s с, заряд %s / %s",
+
+  "death.attack.channeling_overhaul.discharge": "%1$s был заземлён",
+  "death.attack.channeling_overhaul.discharge.player": "%1$s был заземлён трезубцем %2$s",
+  "death.attack.channeling_overhaul.discharge.item": "%1$s был заземлён трезубцем %2$s «%3$s»",
+  "death.attack.channeling_overhaul.discharge.overcharged": "%1$s испарился в разряде %2$s",
+  "death.attack.channeling_overhaul.discharge.conductor": "%1$s забыл, что металл проводит ток",
+  "death.attack.channeling_overhaul.discharge_chain": "%1$s оказался звеном электрической цепи",
+  "death.attack.channeling_overhaul.discharge_chain.player": "%1$s оказался следующим звеном в цепи %2$s",
+  "death.attack.channeling_overhaul.discharge_water": "%1$s принял электрическую ванну",
+  "death.attack.channeling_overhaul.discharge_water.player": "%1$s принял электрическую ванну от %2$s"
+}

@@ -1,0 +1,49 @@
+{
+  "tooltip.channeling_overhaul.charge": "Charge: %s / %s",
+
+  "commands.channeling_overhaul.charge.no_trident": "Hold a trident with %s in your main hand",
+  "commands.channeling_overhaul.charge.get": "%s %s: charge %s / %s, radius %s blocks (%s)",
+  "commands.channeling_overhaul.charge.config.server": "server config",
+  "commands.channeling_overhaul.charge.config.defaults": "defaults, server config is not loaded",
+  "commands.channeling_overhaul.charge.set": "Charge set to %s / %s",
+  "commands.channeling_overhaul.charge.clear": "Charge cleared",
+
+  "commands.channeling_overhaul.station.no_trident": "No stuck trident with %s within %s blocks",
+  "commands.channeling_overhaul.station.trident": "%s %s at %s, R = %s",
+  "commands.channeling_overhaul.station.sky": "S = %s: %s, biome precipitation: %s, weather: %s",
+  "commands.channeling_overhaul.station.sky.open": "open sky",
+  "commands.channeling_overhaul.station.sky.covered": "no open sky",
+  "commands.channeling_overhaul.station.precipitation.rain": "rain",
+  "commands.channeling_overhaul.station.precipitation.snow": "snow",
+  "commands.channeling_overhaul.station.precipitation.none": "none",
+  "commands.channeling_overhaul.station.weather.clear": "clear",
+  "commands.channeling_overhaul.station.weather.rain": "precipitation",
+  "commands.channeling_overhaul.station.weather.thunder": "thunderstorm",
+  "commands.channeling_overhaul.station.antenna": "A = %s = min(%s, 1 + copper %s (%s blocks) + rods %s (%s) + water %s (%s sources))",
+  "commands.channeling_overhaul.station.inflow": "I = S·A = %s charge/s, charge %s / %s",
+
+  "entity.channeling_overhaul.discharge_bolt": "Discharge Bolt",
+
+  "subtitles.channeling_overhaul.trident.full_charge": "Trident fully charged",
+  "subtitles.channeling_overhaul.discharge.chain": "Discharge jumps",
+  "subtitles.channeling_overhaul.discharge.weak": "Discharge crackles",
+  "subtitles.channeling_overhaul.discharge.horn": "Discharge thunders",
+  "subtitles.channeling_overhaul.discharge.distant_thunder": "Distant thunder",
+
+  "chat.channeling_overhaul.discharge.debug": "Discharge into %s: Q = %s, M = %s, D = %s",
+  "chat.channeling_overhaul.chain.debug": "Chain hop %s into %s: base %s, M = %s, D = %s",
+  "chat.channeling_overhaul.water.debug": "Water into %s at %s blocks: base %s, M = %s, D = %s",
+  "chat.channeling_overhaul.lightning.debug": "Lightning %s blocks away: +%s, charge %s / %s",
+  "chat.channeling_overhaul.lightning.debug.rod": "Lightning into a rod %s blocks away: +%s, charge %s / %s",
+  "chat.channeling_overhaul.windup.debug": "Windup: +%s in %s s, charge %s / %s",
+
+  "death.attack.channeling_overhaul.discharge": "%1$s was grounded",
+  "death.attack.channeling_overhaul.discharge.player": "%1$s was grounded by %2$s's trident",
+  "death.attack.channeling_overhaul.discharge.item": "%1$s was grounded by %2$s using %3$s",
+  "death.attack.channeling_overhaul.discharge.overcharged": "%1$s was vaporized by %2$s's discharge",
+  "death.attack.channeling_overhaul.discharge.conductor": "%1$s forgot that metal conducts electricity",
+  "death.attack.channeling_overhaul.discharge_chain": "%1$s became a link in an electric chain",
+  "death.attack.channeling_overhaul.discharge_chain.player": "%1$s became the next link in %2$s's chain",
+  "death.attack.channeling_overhaul.discharge_water": "%1$s took an electric bath",
+  "death.attack.channeling_overhaul.discharge_water.player": "%1$s took an electric bath courtesy of %2$s"
+}

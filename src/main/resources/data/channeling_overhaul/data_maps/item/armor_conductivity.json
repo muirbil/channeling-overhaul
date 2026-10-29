@@ -1,0 +1,33 @@
+{
+  "values": {
+    "minecraft:leather_helmet": { "bonus": 0.0 },
+    "minecraft:leather_chestplate": { "bonus": 0.0 },
+    "minecraft:leather_leggings": { "bonus": 0.0 },
+    "minecraft:leather_boots": { "bonus": 0.0 },
+    "minecraft:chainmail_helmet": { "bonus": 0.1 },
+    "minecraft:chainmail_chestplate": { "bonus": 0.1 },
+    "minecraft:chainmail_leggings": { "bonus": 0.1 },
+    "minecraft:chainmail_boots": { "bonus": 0.1 },
+    "minecraft:iron_helmet": { "bonus": 0.1 },
+    "minecraft:iron_chestplate": { "bonus": 0.1 },
+    "minecraft:iron_leggings": { "bonus": 0.1 },
+    "minecraft:iron_boots": { "bonus": 0.1 },
+    "minecraft:golden_helmet": { "bonus": 0.15 },
+    "minecraft:golden_chestplate": { "bonus": 0.15 },
+    "minecraft:golden_leggings": { "bonus": 0.15 },
+    "minecraft:golden_boots": { "bonus": 0.15 },
+    "minecraft:copper_helmet": { "bonus": 0.15 },
+    "minecraft:copper_chestplate": { "bonus": 0.15 },
+    "minecraft:copper_leggings": { "bonus": 0.15 },
+    "minecraft:copper_boots": { "bonus": 0.15 },
+    "minecraft:diamond_helmet": { "bonus": 0.0 },
+    "minecraft:diamond_chestplate": { "bonus": 0.0 },
+    "minecraft:diamond_leggings": { "bonus": 0.0 },
+    "minecraft:diamond_boots": { "bonus": 0.0 },
+    "minecraft:netherite_helmet": { "bonus": 0.12 },
+    "minecraft:netherite_chestplate": { "bonus": 0.12 },
+    "minecraft:netherite_leggings": { "bonus": 0.12 },
+    "minecraft:netherite_boots": { "bonus": 0.12 },
+    "minecraft:turtle_helmet": { "bonus": 0.0 }
+  }
+}

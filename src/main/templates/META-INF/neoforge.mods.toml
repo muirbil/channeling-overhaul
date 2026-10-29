@@ -1,0 +1,35 @@
+# Make sure this is set to "kotlinforforge"
+modLoader="kotlinforforge"
+# Make sure this is set to the appropriate version range
+loaderVersion="${loader_version_range}"
+license='${mod_license}'
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+authors="${mod_authors}"
+description='''${mod_description}'''
+
+[[mixins]]
+config="${mod_id}.mixins.json"
+
+[[dependencies.${mod_id}]]
+    modId="neoforge"
+    type="required"
+    versionRange="${neo_version_range}"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+# AFTER, so our data pack overrides Apothic Enchanting's data
+[[dependencies.${mod_id}]]
+    modId="apothic_enchanting"
+    type="required"
+    versionRange="[${apothic_enchanting_version},)"
+    ordering="AFTER"
+    side="BOTH"

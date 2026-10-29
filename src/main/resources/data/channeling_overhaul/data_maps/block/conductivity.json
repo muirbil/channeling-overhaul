@@ -1,0 +1,10 @@
+{
+  "values": {
+    "#channeling_overhaul:copper/unaffected": { "conductivity": 1.0 },
+    "#channeling_overhaul:copper/exposed": { "conductivity": 0.75 },
+    "#channeling_overhaul:copper/weathered": { "conductivity": 0.5 },
+    "#channeling_overhaul:copper/oxidized": { "conductivity": 0.25 },
+    "#minecraft:lightning_rods": { "type": "lightning_rod" },
+    "minecraft:water": { "type": "water" }
+  }
+}

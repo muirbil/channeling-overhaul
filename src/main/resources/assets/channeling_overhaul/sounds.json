@@ -1,0 +1,47 @@
+{
+  "trident.full_charge": {
+    "subtitle": "subtitles.channeling_overhaul.trident.full_charge",
+    "sounds": [
+      {
+        "name": "minecraft:block.amethyst_block.chime",
+        "type": "event"
+      }
+    ]
+  },
+  "discharge.chain": {
+    "subtitle": "subtitles.channeling_overhaul.discharge.chain",
+    "sounds": [
+      {
+        "name": "minecraft:entity.lightning_bolt.impact",
+        "type": "event"
+      }
+    ]
+  },
+  "discharge.weak": {
+    "subtitle": "subtitles.channeling_overhaul.discharge.weak",
+    "sounds": [
+      {
+        "name": "minecraft:entity.lightning_bolt.impact",
+        "type": "event"
+      }
+    ]
+  },
+  "discharge.horn": {
+    "subtitle": "subtitles.channeling_overhaul.discharge.horn",
+    "sounds": [
+      {
+        "name": "minecraft:item.trident.thunder",
+        "type": "event"
+      }
+    ]
+  },
+  "discharge.distant_thunder": {
+    "subtitle": "subtitles.channeling_overhaul.discharge.distant_thunder",
+    "sounds": [
+      {
+        "name": "minecraft:entity.lightning_bolt.thunder",
+        "type": "event"
+      }
+    ]
+  }
+}

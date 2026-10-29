@@ -1,0 +1,13 @@
+{
+  "values": {
+    "minecraft:channeling": {
+      "max_level": 31,
+      "max_loot_level": 1,
+      "level_cap": 31,
+      "min_power": {
+        "type": "expression",
+        "expression": "IF(x <= 25, 4 * x, 100 + 15 * (x - 25))"
+      }
+    }
+  }
+}
