@@ -116,22 +116,20 @@ If the primary target stands in water, the discharge also hits every living enti
 
 1. Pick a spot with **open sky**. Nothing above the trident, not even glass.
 2. Lay a **6×6 platform of waxed copper**. Waxed copper doesn't oxidize, so it keeps its conductivity.
-3. Put a **lightning rod** on one of the platform's copper blocks, 2 blocks from where the trident will stick.
+3. Put a **lightning rod** on a copper block in the platform's second row from the near edge.
 4. Optionally, put **copper lanterns** on the corners.
-5. Throw the trident into the platform next to the rod and wait, best of all for a thunderstorm.
-
-No water is needed.
+5. Throw the trident into the same row, 2 blocks from the rod, and wait, best of all for a thunderstorm.
 
 ![A charging station in game](docs/media/station.png)
 
-Top view:
+Top view; the top row is the far edge in the screenshot:
 
 ```
   L # # # # L      #  waxed copper
-  # R # x # #      R  lightning rod
   # # # # # #      x  trident
+  # # # # # #      R  lightning rod on a copper block
   # # # # # #      L  copper lanterns (optional)
-  # # # # # #
+  # # x # R #
   L # # # # L
 ```
 
@@ -145,6 +143,8 @@ How this station charges, with the default config, an empty trident, a rain biom
 | XX | 10.9 | 3.00, the cap | 4 min 20 s | 1 min 27 s |
 
 From level V up the platform alone reaches the ×3 cap, so more copper doesn't help; the lanterns only matter at low levels. Under bare sky the same trident needs three times as long: 4 minutes for V and 13 minutes for XX in rain. A lightning strike into the rod adds another +50% Qmax at once.
+
+Water source blocks nearby give a small bonus (up to +0.3 to A), but they aren't required.
 
 Use `/channeling station` next to a stuck trident to see what charges it.
 

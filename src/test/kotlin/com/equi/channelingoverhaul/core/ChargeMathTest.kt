@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import kotlin.math.hypot
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /** Checks the formulas, tables and examples of DESIGN.md against the default [ChargeParams]. */
 class ChargeMathTest {
@@ -188,46 +189,66 @@ class ChargeMathTest {
 
     @Nested
     inner class Station {
-        // The Channeling V station from DESIGN.md, top view, one cell per block.
+        // The station from DESIGN.md, top view, one cell per block. The platform lies at y = 0,
+        // the rod and the lanterns stand on it at y = 1.
         private val map = listOf(
-            "~ ~ ~ ~ ~ ~ ~",
-            "~ # # # # # ~",
-            "~ # # # # # ~",
-            "~ # # x # # I",
-            "~ # # # # # ~",
-            "~ # # # # # ~",
-            "~ ~ ~ ~ ~ ~ ~",
+            "L # # # # L",
+            "# # # # # #",
+            "# # # # # #",
+            "# # # # # #",
+            "# # x # R #",
+            "L # # # # L",
         )
 
-        private fun stationAntenna(p: ChargeParams): Double {
+        private fun stationAntenna(level: Int, lanterns: Boolean): Double {
             val cells = map.map { it.split(' ') }
             val z0 = cells.indexOfFirst { "x" in it }
             val x0 = cells[z0].indexOf("x")
+            val r = radius(level, p)
+            // A trident stuck in the top of a block sits 0.05 above it.
+            fun distance(x: Int, y: Int, z: Int) =
+                sqrt(((x - x0) * (x - x0) + (z - z0) * (z - z0)).toDouble() + (y + 0.5 - 1.05).pow(2))
             val copper = mutableListOf<Conductor>()
             val rods = mutableListOf<Double>()
-            val water = mutableListOf<Double>()
             for ((z, row) in cells.withIndex()) for ((x, cell) in row.withIndex()) {
-                val d = hypot((x - x0).toDouble(), (z - z0).toDouble())
+                copper += Conductor(distance(x, 0, z), 1.0)
                 when (cell) {
-                    "#" -> copper += Conductor(d, 1.0)
-                    "I" -> rods += d
-                    "~" -> water += d
+                    "R" -> rods += distance(x, 1, z)
+                    "L" -> if (lanterns) copper += Conductor(distance(x, 1, z), 1.0)
                 }
             }
-            return antenna(copper, rods, water, radius(5, p), p)
+            return antenna(copper.filter { it.distance <= r }, rods.filter { it <= r }, emptyList(), r, p)
+        }
+
+        /** Seconds to 95% Qmax from empty, counted in the 10-tick steps of the charger. */
+        private fun timeTo95(level: Int, weather: Weather, antenna: Double): Double {
+            val qMax = capacity(level, p)
+            val inflow = ChargeMath.inflow(skyInflow(true, weather, Precipitation.RAIN, p), antenna)
+            var t = 0.0
+            while (charge(0.0, inflow, t, qMax) < 0.95 * qMax) t += 0.5
+            return t
+        }
+
+        @ParameterizedTest(name = "L = {0}, lanterns = {1}")
+        @CsvSource(
+            // level, lanterns, antenna, seconds to 95% in rain, in a thunderstorm
+            "1,  false, 2.47, 39,  13",
+            "1,  true,  2.54, 38,  13",
+            "5,  false, 3.0,  80,  27",
+            "10, false, 3.0,  140, 47",
+            "20, false, 3.0,  260, 87",
+        )
+        fun `matches the table`(level: Int, lanterns: Boolean, a: Double, rain: Double, thunder: Double) {
+            val antenna = stationAntenna(level, lanterns)
+            assertEquals(a, antenna, 0.005)
+            assertEquals(rain, timeTo95(level, Weather.RAIN, antenna))
+            assertEquals(thunder, timeTo95(level, Weather.THUNDER, antenna))
         }
 
         @Test
-        fun `24 copper blocks with a rod and water reach the cap`() {
-            assertEquals(3.0, stationAntenna(p), 1e-9)
-            assertTrue(stationAntenna(p.copy(antennaMax = 100.0)) > 3.0)
-        }
-
-        @Test
-        fun `channeling V charges almost fully in a minute of rain`() {
-            val qMax = capacity(5, p)
-            val inflow = ChargeMath.inflow(skyInflow(true, Weather.RAIN, Precipitation.RAIN, p), stationAntenna(p))
-            assertTrue(charge(0.0, inflow, 60.0, qMax) >= 0.85 * qMax)
+        fun `bare sky takes three times as long`() {
+            assertEquals(240.0, timeTo95(5, Weather.RAIN, 1.0))
+            assertEquals(779.0, timeTo95(20, Weather.RAIN, 1.0))
         }
     }
 

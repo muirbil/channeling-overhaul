@@ -317,21 +317,29 @@ The chain and the water have base keys without a killer too: "%1$s became a link
 
 A station is a place where the trident is stuck to charge: open sky, waxed copper around, a lightning rod nearby. The mod adds no separate station block; it's built from vanilla blocks.
 
-Example for Channeling V (R ≈ 6.5), top view:
+The canonical example is the build on [docs/media/station.png](docs/media/station.png): a 6×6 platform of waxed copper, the trident and a lightning rod on a copper block in the second row from the near edge, 2 blocks apart, copper lanterns on the corners. Top view; the top row is the far edge in the screenshot:
 
 ```
-  ~ ~ ~ ~ ~ ~ ~      #  waxed copper
-  ~ # # # # # ~      I  lightning rod on a pillar (to the side, so it doesn't block the sky)
-  ~ # # # # # ~      x  the trident is stuck here
-  ~ # # x # # I      ~  water moat (small bonus)
-  ~ # # # # # ~
-  ~ # # # # # ~
-  ~ ~ ~ ~ ~ ~ ~
+  L # # # # L      #  waxed copper
+  # # # # # #      x  trident
+  # # # # # #      R  lightning rod on a copper block
+  # # # # # #      L  copper lanterns (optional)
+  # # x # R #
+  L # # # # L
 ```
 
-Expected effect: 24 copper blocks together with the lightning rod and the water hit the cap A = 3. In rain Channeling V charges almost fully in about a minute; in a thunderstorm one strike into the rod gives +20 charge at once.
+How this station charges, with the default config, an empty trident, a rain biome and no lightning strikes:
 
-For high levels the station grows: radius XX ≈ 11 blocks, XXXI ≈ 13. Hitting the cap A = 3 takes about 30 closely placed copper blocks, so building huge fields is pointless; the sensible thing is to place copper densely around the point and wait for a thunderstorm.
+| Level | Radius R | Antenna A | To 95% in rain | To 95% in a thunderstorm |
+| --- | --- | --- | --- | --- |
+| I | 4.0 | 2.47 (2.54 with lanterns) | 39 s (38 s with lanterns) | 13 s |
+| V | 6.5 | 3.00, the cap | 1 min 20 s | 27 s |
+| X | 8.3 | 3.00, the cap | 2 min 20 s | 47 s |
+| XX | 10.9 | 3.00, the cap | 4 min 20 s | 1 min 27 s |
+
+From level V up the platform alone reaches the ×3 cap, so more copper doesn't help; the lanterns only matter at low levels. Under bare sky the same trident needs three times as long: 4 minutes for V and 13 minutes for XX in rain. A lightning strike into the rod adds another +50% Qmax at once.
+
+Water source blocks nearby give a small bonus (up to +0.3 to A), but they aren't required.
 
 ## Visuals and sound
 
