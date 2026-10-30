@@ -8,8 +8,9 @@ Channeling stops being "lightning in a thunderstorm" and becomes a charge mechan
 
 Developed with the help of Claude Code (AI coding assistant).
 
-<!-- TODO: hero GIF — a trident charging at a copper station, then a chain discharge through a group of mobs -->
-> 🎞️ **[GIF placeholder: station charging + chain discharge]**
+![Chain discharge through water](docs/media/hero.gif)
+
+*Chain discharge through water*
 
 ## Requirements
 
@@ -33,6 +34,10 @@ Install the mod on both the server and the client.
 - The charge lives in the trident item. The tooltip shows it as **Charge: X / Y**.
 - Outside of charging (in the inventory, in hand, in flight) the charge slowly leaks, with a half-life of 150 seconds. You can charge up at a station and then go fight.
 - Only tridents with Channeling hold a charge.
+
+![Charging at a copper station](docs/media/charging.gif)
+
+*Charging at a copper station*
 
 ### Charging station
 
@@ -110,32 +115,41 @@ If the primary target stands in water, the discharge also hits every living enti
 <!-- TODO: screenshot — tooltip "Charge: X / Y" and the four glow steps of the trident sprite -->
 > 🖼️ **[Screenshot placeholder: tooltip and glow steps]**
 
-## Building a station
+## How to build a charging station
 
 1. Pick a spot with **open sky**. Nothing above the trident, not even glass.
-2. Lay **waxed copper** densely around the point where the trident will stick. Waxed copper doesn't oxidize, so it keeps its conductivity.
-3. Put a **lightning rod** on a pillar to the side, so it doesn't cover the sky.
-4. Optionally, dig a **water moat** around it.
-5. Throw the trident into the middle and wait, best of all for a thunderstorm.
+2. Lay a **6×6 platform of waxed copper**. Waxed copper doesn't oxidize, so it keeps its conductivity.
+3. Put a **lightning rod** on one of the platform's copper blocks, 2 blocks from where the trident will stick.
+4. Optionally, put **copper lanterns** on the corners.
+5. Throw the trident into the platform next to the rod and wait, best of all for a thunderstorm.
 
-Example for Channeling V (R ≈ 6.5), top view:
+No water is needed.
+
+![A charging station in game](docs/media/station.png)
+
+Top view:
 
 ```
-  ~ ~ ~ ~ ~ ~ ~      #  waxed copper
-  ~ # # # # # ~      I  lightning rod on a pillar (to the side, so it doesn't block the sky)
-  ~ # # # # # ~      x  the trident is stuck here
-  ~ # # x # # I      ~  water moat (small bonus)
-  ~ # # # # # ~
-  ~ # # # # # ~
-  ~ ~ ~ ~ ~ ~ ~
+  L # # # # L      #  waxed copper
+  # R # x # #      R  lightning rod
+  # # # # # #      x  trident
+  # # # # # #      L  copper lanterns (optional)
+  # # # # # #
+  L # # # # L
 ```
 
-These 24 copper blocks with the rod and the water reach the ×3 cap. In rain Channeling V fills almost completely in about a minute; in a thunderstorm one strike into the rod gives +20 charge at once. About 30 closely placed copper blocks reach the cap at any level, so huge copper fields don't help.
+How this station charges, with the default config, an empty trident, a rain biome and no lightning strikes:
+
+| Level | Radius R | Antenna A | To 95% in rain | To 95% in a thunderstorm |
+| --- | --- | --- | --- | --- |
+| I | 4.0 | 2.47 (2.54 with lanterns) | 39 s (38 s with lanterns) | 13 s |
+| V | 6.5 | 3.00, the cap | 1 min 20 s | 27 s |
+| X | 8.3 | 3.00, the cap | 2 min 20 s | 47 s |
+| XX | 10.9 | 3.00, the cap | 4 min 20 s | 1 min 27 s |
+
+From level V up the platform alone reaches the ×3 cap, so more copper doesn't help; the lanterns only matter at low levels. Under bare sky the same trident needs three times as long: 4 minutes for V and 13 minutes for XX in rain. A lightning strike into the rod adds another +50% Qmax at once.
 
 Use `/channeling station` next to a stuck trident to see what charges it.
-
-<!-- TODO: screenshot — the example station above, built in game, with a trident in the middle -->
-> 🖼️ **[Screenshot placeholder: the example station in game]**
 
 ## Levels
 
