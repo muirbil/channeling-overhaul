@@ -112,9 +112,6 @@ If the primary target stands in water, the discharge also hits every living enti
 - A full trident chimes once.
 - Chains draw a zigzag of sparks between targets.
 
-<!-- TODO: screenshot — tooltip "Charge: X / Y" and the four glow steps of the trident sprite -->
-> 🖼️ **[Screenshot placeholder: tooltip and glow steps]**
-
 ## How to build a charging station
 
 1. Pick a spot with **open sky**. Nothing above the trident, not even glass.

@@ -486,7 +486,7 @@ Work should go in stages so that after each one the mod starts and shows somethi
 - [x] **5. Discharge.** `DischargeHandler`, damage types, vulnerability M, keeping the charge on a miss.
 - [x] **6. Chain and water.** `ChainScheduler`, `WaterSpread`, exclusions (owner, pets, PvP).
 - [x] **7. Lightning and windup.** `LightningListener`, `WindupCharger`.
-- [ ] **8. Visuals and sound.** Gathering particles, arcs, glow, sounds.
+- [x] **8. Visuals and sound.** Gathering particles, arcs, glow, sounds.
 - [ ] **9. Balance.** *Deferred until player feedback.* Playtest at levels I, V, X, XX, XXXI, tuning the numbers in the config. Release 0.1.0-beta ships with the starting numbers of this document.
 
 ### Future improvements
@@ -506,8 +506,7 @@ Not part of stages 0–9, decided after balance.
 
 ### Open questions
 
-- Confirm the reference points of the `min_power` formula in a playtest (section "Enchantment").
-- Trident glow in hand. Currently it exists only on the flat sprite: inventory, dropped item, item frame, shelf. The 3D model in hand needs an own special model renderer on top of the vanilla one. Decide after the playtest.
+- What will the new trident model look like?
 
 ### Decided
 
@@ -517,7 +516,6 @@ Not part of stages 0–9, decided after balance.
 - **PvP:** with PvP on, the chain hits players by default and doesn't touch team allies; turned off in the config (`chainHitsPlayers`).
 - **The discharge's visual lightning** is an own entity `discharge_bolt`, not a `LightningBolt` with `setVisualOnly`: the vanilla one would thunder for 16 chunks and change copper and lightning rods (section "Damage type and side effects").
 - **Snow** charges weaker than rain (0.35 / 1.0 versus 0.5 / 1.5); biomes without precipitation behave as clear weather.
-- **Name:** Channeling Overhaul, mod id `channeling_overhaul`, described as "an addon to Apothic Enchanting". Don't use the "Apothic" prefix without the author's permission: it's the brand name of the official Apotheosis modules.
 
 ### Links
 
