@@ -5,7 +5,7 @@ import com.equi.channelingoverhaul.charge.LoyaltyAnchor;
 import com.equi.channelingoverhaul.discharge.DischargeHandler;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.phys.EntityHitResult;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +26,7 @@ public abstract class ThrownTridentMixin {
      */
     @ModifyExpressionValue(
         method = "tick",
-        at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/projectile/arrow/ThrownTrident;dealtDamage:Z", opcode = Opcodes.GETFIELD)
+        at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/projectile/ThrownTrident;dealtDamage:Z", opcode = Opcodes.GETFIELD)
     )
     private boolean channeling_overhaul$holdInConductor(boolean dealtDamage) {
         return dealtDamage && !LoyaltyAnchor.holds((ThrownTrident) (Object) this);
@@ -40,14 +40,14 @@ public abstract class ThrownTridentMixin {
 
     /**
      * {@code onHitEntity} reaches {@code doPostHurtEffects} only when the trident's own damage went through
-     * ({@code hurtOrSimulate} returned true, the target is living and not an enderman dodging it), after the
+     * ({@code hurt} returned true, the target is living and not an enderman dodging it), after the
      * vanilla enchantment effects and the knockback. A blocked or refused hit keeps the charge.
      */
     @Inject(
         method = "onHitEntity",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/entity/projectile/arrow/ThrownTrident;doPostHurtEffects(Lnet/minecraft/world/entity/LivingEntity;)V",
+            target = "Lnet/minecraft/world/entity/projectile/ThrownTrident;doPostHurtEffects(Lnet/minecraft/world/entity/LivingEntity;)V",
             shift = At.Shift.AFTER
         )
     )

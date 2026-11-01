@@ -41,7 +41,7 @@ object SourceScanner {
             if (distanceSqr > radiusSqr || !level.isLoaded(pos)) continue
             val state = level.getBlockState(pos)
             if (state.isAir) continue
-            val source = state.typeHolder().getData(ModDataMaps.CONDUCTIVITY) ?: continue
+            val source = state.blockHolder.getData(ModDataMaps.CONDUCTIVITY) ?: continue
             action(pos, sqrt(distanceSqr), source, state.fluidState.isSource)
         }
     }

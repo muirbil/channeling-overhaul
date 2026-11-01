@@ -11,10 +11,9 @@ import com.equi.channelingoverhaul.registry.ModSounds
 import net.minecraft.core.component.DataComponents
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
-import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.LightningBolt
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 import net.minecraft.world.item.ItemStack
 
 /**
@@ -34,7 +33,7 @@ object DischargeHandler {
         // The leak of the flight ends here
         val q = TridentCharge.read(stack, now)
         val qMax = ChargeMath.capacity(channeling, p)
-        val discharge = ChargeMath.discharge(q, qMax, DischargeTargets.armorBonuses(target), target.isInWaterOrRain, p) ?: return
+        val discharge = ChargeMath.discharge(q, qMax, DischargeTargets.armorBonuses(target), target.isInWaterRainOrBubble, p) ?: return
         TridentCharge.write(stack, 0.0, now)
 
         // The vanilla Channeling effect has run before us: in a thunderstorm it struck the target with a real bolt
@@ -42,7 +41,7 @@ object DischargeHandler {
             it.tickCount == 0
         }.isNotEmpty()
         val origin = DischargeOrigin.of(level, trident)
-        target.hurtServer(level, source(level, trident, discharge, stack), discharge.damage.toFloat())
+        target.hurt(source(level, trident, discharge, stack), discharge.damage.toFloat())
         effects(level, target, discharge, vanillaLightning, p)
         if (ModConfig.rules.distantThunder && discharge.overcharged && channeling >= p.distantThunderMinLevel) {
             // Volume 10000 carries the sound 160 000 blocks: the whole dimension, like a real thunderbolt
@@ -81,8 +80,8 @@ object DischargeHandler {
             return
         }
         if (vanillaLightning) return
-        ModEntities.DISCHARGE_BOLT.create(level, EntitySpawnReason.TRIGGERED)?.let { bolt ->
-            bolt.snapTo(target.position())
+        ModEntities.DISCHARGE_BOLT.create(level)?.let { bolt ->
+            bolt.moveTo(target.position())
             level.addFreshEntity(bolt)
         }
         level.playSound(

@@ -15,7 +15,7 @@ import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.HumanoidArm
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 import net.minecraft.world.item.TridentItem
 import net.minecraft.world.phys.Vec3
 import net.neoforged.api.distmarker.Dist

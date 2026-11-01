@@ -3,7 +3,7 @@ package com.equi.channelingoverhaul.registry
 import com.equi.channelingoverhaul.ChannelingOverhaul
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.damagesource.DamageType
@@ -25,5 +25,5 @@ object ModDamageTypes {
         level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(key)
 
     private fun key(path: String): ResourceKey<DamageType> =
-        ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(ChannelingOverhaul.ID, path))
+        ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(ChannelingOverhaul.ID, path))
 }

@@ -34,7 +34,7 @@ object ChargeCommand {
     fun onRegisterCommands(event: RegisterCommandsEvent) {
         event.dispatcher.register(
             Commands.literal("channeling")
-                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires { it.hasPermission(Commands.LEVEL_GAMEMASTERS) }
                 .then(
                     Commands.literal("charge")
                         .then(Commands.literal("get").executes { get(it.source) })

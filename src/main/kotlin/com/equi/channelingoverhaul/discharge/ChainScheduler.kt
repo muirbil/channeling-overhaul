@@ -87,7 +87,7 @@ object ChainScheduler {
         val damage = base * m[index]
         val to = target.boundingBox.center
         run.hit += target.id
-        target.hurtServer(level, source, damage.toFloat())
+        target.hurt(source, damage.toFloat())
         DischargeEffects.arc(level, from, to)
         DischargeEffects.crackle(level, target, p)
         DischargeEffects.debug(level, run.origin, "chat.channeling_overhaul.chain.debug", hop, target.displayName, base, m[index], damage)

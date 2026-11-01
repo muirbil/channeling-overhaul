@@ -17,8 +17,8 @@ object EnchantmentGameTests {
         val info = ApothicEnchanting.getEnchInfo(channeling)
 
         helper.assertTrue(channeling.value().maxLevel == 31, "vanilla max_level is ${channeling.value().maxLevel}")
-        helper.assertTrue(info.getMaxLevel(channeling) == 31, "Apothic max level is ${info.getMaxLevel(channeling)}")
-        helper.assertTrue(info.getMaxLootLevel(channeling) == 1, "loot level is ${info.getMaxLootLevel(channeling)}")
+        helper.assertTrue(info.getMaxLevel() == 31, "Apothic max level is ${info.getMaxLevel()}")
+        helper.assertTrue(info.getMaxLootLevel() == 1, "loot level is ${info.getMaxLootLevel()}")
         helper.assertTrue(info.levelCap() == 31, "level cap is ${info.levelCap()}")
 
         // Table power -> the level the enchanting table offers, as in the "Зачарование" section
@@ -26,7 +26,7 @@ object EnchantmentGameTests {
         val trident = ItemStack(Items.TRIDENT)
         val actual = expected.mapValues { (power, _) ->
             ApothEnchantmentHelper.getAvailableEnchantmentResults(power, trident, Stream.of(channeling))
-                .singleOrNull()?.level() ?: 0
+                .singleOrNull()?.level ?: 0
         }
         helper.assertTrue(actual == expected, "table levels by power: $actual")
         helper.succeed()

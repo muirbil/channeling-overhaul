@@ -1,5 +1,6 @@
 package com.equi.channelingoverhaul.data
 
+import com.equi.channelingoverhaul.registry.ModEnchantment
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import dev.shadowsoffire.apothic_attributes.repack.evalex.Expression
@@ -15,8 +16,6 @@ class EnchantmentDataTest {
         JsonParser.parseString(File("src/main/resources/$path").readText()).asJsonObject
 
     private val enchantment = ours("data/minecraft/enchantment/channeling.json")
-    private val info = ours("data/apothic_enchanting/data_maps/enchantment/enchantment_info.json")
-        .getAsJsonObject("values").getAsJsonObject("minecraft:channeling")
 
     /** The vanilla file from the Minecraft jar on the classpath, not our override. */
     private val vanilla: JsonObject = javaClass.classLoader
@@ -26,7 +25,7 @@ class EnchantmentDataTest {
 
     /** Same calls as Apothic Enchanting's ExpressionPowerFunction, one expression reused for every level. */
     private val minPower: (Int) -> Int = run {
-        val expression = Expression(info.getAsJsonObject("min_power").get("expression").asString)
+        val expression = Expression(ModEnchantment.MIN_POWER)
         // toInt() is BigDecimal.intValue(), as in Apothic Enchanting
         val fn = { level: Int -> expression.setVariable("x", BigDecimal(level)).eval().toInt() }
         fn
@@ -46,15 +45,14 @@ class EnchantmentDataTest {
     }
 
     @Test
-    fun `data map caps the level at 31 and keeps loot at I`() {
-        assertEquals(31, info.get("max_level").asInt)
-        assertEquals(31, info.get("level_cap").asInt)
-        assertEquals(1, info.get("max_loot_level").asInt)
+    fun `the level stops at 31 and loot stays at I`() {
+        assertEquals(31, ModEnchantment.MAX_LEVEL)
+        assertEquals(1, ModEnchantment.MAX_LOOT_LEVEL)
     }
 
     @Test
-    fun `max level matches the data map, so no level shows as over the maximum`() {
-        assertEquals(info.get("max_level").asInt, enchantment.get("max_level").asInt)
+    fun `max level matches Apothic Enchanting, so no level shows as over the maximum`() {
+        assertEquals(ModEnchantment.MAX_LEVEL, enchantment.get("max_level").asInt)
     }
 
     @Test

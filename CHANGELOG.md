@@ -2,9 +2,15 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses [Semantic Versioning](https://semver.org/).
 
-## [0.1.0-beta] — 2026-10-29
+## [0.1.0-beta] — 2026-11-01
 
-First public release, for Minecraft 26.1.2, NeoForge 26.1.2.64-beta+, Kotlin for Forge 6.4+ and Apothic Enchanting 2.1.0+.
+First public release of the 1.21.1 build, for Minecraft 1.21.1, NeoForge 21.1.235+, Kotlin for Forge 5.12+ and Apothic Enchanting 1.6.4+. It has the mechanics and numbers of the 0.1.0-beta for Minecraft 26.1.
+
+### Differences from the 26.1 build
+
+- Copper bars, chains, lanterns, chests and golem statues, oxidized lightning rods and copper armor don't exist in 1.21.1, so the data lists them no more.
+- Channeling levels live in Apothic Enchanting's `enchantments.cfg` here. The mod sets them after each load, unless `Min Power Function` of `minecraft:channeling` is filled in.
+- The glow shows in the inventory, on the ground and in item frames: 1.21.1 has no shelves.
 
 ### Added
 
@@ -20,7 +26,7 @@ First public release, for Minecraft 26.1.2, NeoForge 26.1.2.64-beta+, Kotlin for
   - The reach is 4 blocks, or 6 to conductive targets.
   - The chain skips the owner, their pets, team allies, players with PvP off and the entity tag `channeling_overhaul:discharge_immune`.
 - **Water spread.** A primary target in water spreads the discharge to everyone in water within min(8, 3 + L / 5) blocks. An optional same-water-body mode is in the config.
-- **Damage types.** `channeling_overhaul:discharge`, `discharge_chain` and `discharge_water` are in `#minecraft:is_lightning`, with their own death messages in English and Russian. A config option shows mob deaths from discharges to all players.
+- **Damage types.** `channeling_overhaul:discharge`, `discharge_chain` and `discharge_water` are in `#minecraft:is_lightning`, with their own death messages in English, Russian and Japanese. A config option shows mob deaths from discharges to all players.
 - **Loyalty in copper.** A Loyalty + Channeling trident stays stuck in copper or a lightning rod to charge.
 - **No despawn.** Stuck Channeling tridents that can be picked up don't despawn.
 - **Enchantment levels.** Channeling goes up to level XXXI through Apothic Enchanting, with an enchanting table power curve for high levels.
@@ -32,6 +38,7 @@ First public release, for Minecraft 26.1.2, NeoForge 26.1.2.64-beta+, Kotlin for
   - an optional distant thunder for overcharged discharges at level XX and above.
 - **Server config** with all balance numbers and switches. **Client config** for particle density.
 - **Operator commands:** `/channeling charge get | set <amount> | fill | clear` and `/channeling station`.
+- **Languages:** English, Russian and Japanese (`ja_jp`, so far only in the 1.21.1 build).
 
 ### Known limitations
 
@@ -39,4 +46,4 @@ First public release, for Minecraft 26.1.2, NeoForge 26.1.2.64-beta+, Kotlin for
 - The glow shows only on the flat trident sprite, not on the 3D model in hand.
 - Apotheosis integration is not tested yet.
 
-[0.1.0-beta]: ../../releases/tag/v0.1.0-beta
+[0.1.0-beta]: ../../releases/tag/v0.1.0-beta-1.21.1

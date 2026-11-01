@@ -117,7 +117,7 @@ object ModConfig {
         .comment(
             "Who hears that a mob was killed by a discharge, chain or water, besides the owner of a tamed animal:",
             "vanilla - nobody else, named - everyone for mobs with a name and tamed animals, all - everyone for any mob.",
-            "Player deaths are always shown by vanilla. Respects the show_death_messages game rule",
+            "Player deaths are always shown by vanilla. Respects the showDeathMessages game rule",
         )
         .defineEnum("deathMessages", RULES.deathMessages)
 

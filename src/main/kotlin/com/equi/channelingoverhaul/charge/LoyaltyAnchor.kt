@@ -4,7 +4,7 @@ import com.equi.channelingoverhaul.core.ConductorType
 import com.equi.channelingoverhaul.data.TridentCharge
 import com.equi.channelingoverhaul.mixin.AbstractArrowAccessor
 import com.equi.channelingoverhaul.registry.ModDataMaps
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 
 /**
  * A Loyalty trident with Channeling stuck in copper or a lightning rod (by the `conductivity` data map)
@@ -18,7 +18,7 @@ object LoyaltyAnchor {
         if (trident.level().isClientSide) return true
         if (TridentCharge.level(trident.pickupItemStackOrigin, trident.level().registryAccess()) <= 0) return false
         val hit = (trident as AbstractArrowAccessor).`channeling_overhaul$getLastState`() ?: return false
-        val type = hit.typeHolder().getData(ModDataMaps.CONDUCTIVITY)?.type
+        val type = hit.blockHolder.getData(ModDataMaps.CONDUCTIVITY)?.type
         return type == ConductorType.COPPER || type == ConductorType.LIGHTNING_ROD
     }
 }

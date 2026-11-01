@@ -19,15 +19,14 @@ import net.minecraft.gametest.framework.GameTestHelper
 import net.minecraft.network.Connection
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.PacketFlow
-import net.minecraft.network.protocol.game.ServerboundPlayerLoadedPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.network.CommonListenerCookie
 import net.minecraft.server.network.ServerGamePacketListenerImpl
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.entity.animal.wolf.Wolf
+import net.minecraft.world.entity.animal.Wolf
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.Vec3
 import java.util.UUID
@@ -85,9 +84,9 @@ object ChainGameTests {
         val spared = listOf<LivingEntity>(owner, wolf)
         var before = emptyList<Float>()
         helper.runAfterDelay(THROW_TICK) {
-            // A mock player can't be hurt until its client counts as loaded: then sparing it would prove nothing
+            // A player that can't be hurt at all would prove nothing by being spared
             val probe = DischargeTargets.source(helper.level, ModDamageTypes.DISCHARGE_CHAIN, originOf(helper, null))
-            helper.assertTrue(!owner.isInvulnerableTo(helper.level, probe), "the owner can't be hurt at all")
+            helper.assertTrue(!owner.isInvulnerableTo(probe), "the owner can't be hurt at all")
             before = spared.map { it.health }
             throwDown(helper, owner, x = 4, channeling = 6)
         }
@@ -96,7 +95,7 @@ object ChainGameTests {
             assertLost(helper, primary, 8.0 + ChargeMath.dischargeDamage(CHARGE, 1.0, p), TOLERANCE)
             assertLost(helper, other, ChargeMath.chainBase(CHARGE, 1, p), TOLERANCE)
             spared.zip(before).forEach { (entity, health) ->
-                helper.assertTrue(entity.health == health, "${entity.displayName.string}: ${entity.health} of $health")
+                helper.assertTrue(entity.health == health, "${entity.displayName!!.string}: ${entity.health} of $health")
             }
             remove(owner)
             helper.succeed()
@@ -173,7 +172,7 @@ object ChainGameTests {
 
         fun check(victim: LivingEntity, mode: DeathMessageMode, expected: List<ServerPlayer>, show: Boolean = true) {
             val heard = DeathAnnouncer.recipients(victim, mode, show, players)
-            helper.assertTrue(heard == expected, "$mode, ${victim.displayName.string}: ${heard.map { it.displayName.string }}")
+            helper.assertTrue(heard == expected, "$mode, ${victim.displayName!!.string}: ${heard.map { it.displayName!!.string }}")
         }
 
         for (victim in listOf(plain, named, pet, stranger)) check(victim, DeathMessageMode.VANILLA, emptyList())
@@ -203,7 +202,7 @@ object ChainGameTests {
         )
 
     /**
-     * A survival player in the level that can be hurt: its client counts as loaded, and it has no Apothic Attributes
+     * A survival player in the level that can be hurt, with no Apothic Attributes
      * crits. It skips the player list login of `makeMockServerPlayerInLevel`, where Apothic Attributes sends its
      * config to a test connection that can't carry mod payloads.
      */
@@ -213,8 +212,8 @@ object ChainGameTests {
         val player = ServerPlayer(level.server, level, cookie.gameProfile(), cookie.clientInformation())
         val connection = Connection(PacketFlow.SERVERBOUND)
         EmbeddedChannel(connection)
-        ServerGamePacketListenerImpl(level.server, connection, player, cookie).handleAcceptPlayerLoad(ServerboundPlayerLoadedPacket())
-        player.snapTo(helper.absoluteVec(pos))
+        ServerGamePacketListenerImpl(level.server, connection, player, cookie)
+        player.moveTo(helper.absoluteVec(pos))
         player.getAttribute(ALObjects.Attributes.CRIT_CHANCE)!!.baseValue = 0.0
         level.addNewPlayer(player)
         return player

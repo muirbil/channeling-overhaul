@@ -7,7 +7,7 @@ import com.equi.channelingoverhaul.core.ChargeParams
 import com.equi.channelingoverhaul.registry.ModDamageTypes
 import com.equi.channelingoverhaul.registry.ModDataMaps
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
@@ -21,7 +21,7 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.OwnableEntity
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import java.util.UUID
@@ -55,18 +55,18 @@ class DischargeOrigin(
 object DischargeTargets {
     /** `data/channeling_overhaul/tags/entity_type/discharge_immune.json`: never hit by the chain or the water. */
     val DISCHARGE_IMMUNE: TagKey<EntityType<*>> =
-        TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(ChannelingOverhaul.ID, "discharge_immune"))
+        TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(ChannelingOverhaul.ID, "discharge_immune"))
 
     /** Bonus of each worn armor piece that has one in the `armor_conductivity` data map. */
     fun armorBonuses(target: LivingEntity): List<Double> =
         EquipmentSlot.entries.filter { it.isArmor }
             .map(target::getItemBySlot)
             .filterNot(ItemStack::isEmpty)
-            .mapNotNull { it.typeHolder().getData(ModDataMaps.ARMOR_CONDUCTIVITY) }
+            .mapNotNull { it.itemHolder.getData(ModDataMaps.ARMOR_CONDUCTIVITY) }
 
     /** M = min(2, 1 + armor bonuses + 0.25 when wet). */
     fun vulnerability(target: LivingEntity, p: ChargeParams): Double =
-        ChargeMath.vulnerability(armorBonuses(target).sum(), target.isInWaterOrRain, p)
+        ChargeMath.vulnerability(armorBonuses(target).sum(), target.isInWaterRainOrBubble, p)
 
     /**
      * Whether a chain hop or the water may hit [entity]. Never the owner, the owner's tamed animals and teammates,
@@ -75,11 +75,11 @@ object DischargeTargets {
      */
     fun canHit(level: ServerLevel, entity: LivingEntity, origin: DischargeOrigin, source: DamageSource, rules: DischargeRules): Boolean {
         if (!entity.isAlive || entity.isSpectator || entity is ArmorStand) return false
-        if (entity.typeHolder().`is`(DISCHARGE_IMMUNE) || entity.isInvulnerableTo(level, source)) return false
+        if (entity.type.`is`(DISCHARGE_IMMUNE) || entity.isInvulnerableTo(source)) return false
         val ownerId = origin.ownerId
-        if (ownerId != null && (entity.uuid == ownerId || (entity as? OwnableEntity)?.ownerReference?.uuid == ownerId)) return false
+        if (ownerId != null && (entity.uuid == ownerId || (entity as? OwnableEntity)?.ownerUUID == ownerId)) return false
         if (origin.ownerTeam != null && entity.team?.name == origin.ownerTeam) return false
-        if (entity is Player && origin.ownerIsPlayer && !(level.isPvpAllowed && rules.chainHitsPlayers)) return false
+        if (entity is Player && origin.ownerIsPlayer && !(level.server.isPvpAllowed && rules.chainHitsPlayers)) return false
         return true
     }
 

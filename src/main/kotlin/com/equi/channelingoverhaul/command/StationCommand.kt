@@ -12,7 +12,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.network.chat.Component
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 import net.minecraft.world.phys.AABB
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
@@ -39,7 +39,7 @@ object StationCommand {
     fun onRegisterCommands(event: RegisterCommandsEvent) {
         event.dispatcher.register(
             Commands.literal("channeling")
-                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires { it.hasPermission(Commands.LEVEL_GAMEMASTERS) }
                 .then(Commands.literal("station").executes { station(it.source) })
         )
     }

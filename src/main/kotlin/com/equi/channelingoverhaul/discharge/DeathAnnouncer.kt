@@ -10,7 +10,7 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.OwnableEntity
 import net.minecraft.world.entity.TamableAnimal
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.level.gamerules.GameRules
+import net.minecraft.world.level.GameRules
 import net.neoforged.bus.api.EventPriority
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
@@ -30,7 +30,7 @@ object DeathAnnouncer {
         val victim = event.entity
         val level = victim.level() as? ServerLevel ?: return
         if (TYPES.none { event.source.`is`(it) }) return
-        val showDeathMessages = level.gameRules.get(GameRules.SHOW_DEATH_MESSAGES)
+        val showDeathMessages = level.gameRules.getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)
         val recipients = recipients(victim, ModConfig.rules.deathMessages, showDeathMessages, level.server.playerList.players)
         if (recipients.isEmpty()) return
         val message = victim.combatTracker.deathMessage
@@ -39,12 +39,12 @@ object DeathAnnouncer {
 
     /**
      * Who hears of [victim]'s death besides those vanilla tells. `named`: for mobs with a custom name and tamed
-     * animals, `all`: for any mob. Never for players, never against `show_death_messages`. The owner of a tamed
+     * animals, `all`: for any mob. Never for players, never against `showDeathMessages`. The owner of a tamed
      * animal is left out when vanilla tells them itself, which `TamableAnimal.die` does right after this event.
      */
     fun recipients(victim: LivingEntity, mode: DeathMessageMode, showDeathMessages: Boolean, players: List<ServerPlayer>): List<ServerPlayer> {
         if (!showDeathMessages || mode == DeathMessageMode.VANILLA || victim is Player) return emptyList()
-        val tamed = (victim as? OwnableEntity)?.ownerReference != null
+        val tamed = (victim as? OwnableEntity)?.ownerUUID != null
         if (mode == DeathMessageMode.NAMED && !victim.hasCustomName() && !tamed) return emptyList()
         val toldByVanilla = (victim as? TamableAnimal)?.owner as? ServerPlayer
         return players.filter { it !== toldByVanilla }

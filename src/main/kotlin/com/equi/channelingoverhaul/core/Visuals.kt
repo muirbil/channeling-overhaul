@@ -34,7 +34,7 @@ data class VisualParams(
 
 /** Pure functions of the look: glow stages of the trident item, spark rates, when to sync. */
 object Visuals {
-    /** Charge fractions where the item glow steps up; also the thresholds of `assets/minecraft/items/trident.json`. */
+    /** Thresholds of the item glow stages by Q / Qmax; how the item model applies them depends on the game version. */
     val GLOW_THRESHOLDS = listOf(0.25, 0.5, 0.75, 1.0)
 
     fun isFull(charge: Double, qMax: Double, v: VisualParams): Boolean = qMax > 0.0 && charge >= v.fullCharge * qMax

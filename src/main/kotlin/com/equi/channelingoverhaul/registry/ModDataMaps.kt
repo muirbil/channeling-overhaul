@@ -7,7 +7,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.neoforged.neoforge.registries.datamaps.DataMapType
@@ -36,7 +36,7 @@ object ModDataMaps {
      * lightning rods and water for the antenna. Synced for the client particles of stage 8.
      */
     val CONDUCTIVITY: DataMapType<Block, Conductivity> = DataMapType
-        .builder(Identifier.fromNamespaceAndPath(ChannelingOverhaul.ID, "conductivity"), Registries.BLOCK, CONDUCTIVITY_CODEC)
+        .builder(ResourceLocation.fromNamespaceAndPath(ChannelingOverhaul.ID, "conductivity"), Registries.BLOCK, CONDUCTIVITY_CODEC)
         .synced(CONDUCTIVITY_CODEC, false)
         .build()
 
@@ -46,7 +46,7 @@ object ModDataMaps {
      */
     val ARMOR_CONDUCTIVITY: DataMapType<Item, Double> = DataMapType
         .builder(
-            Identifier.fromNamespaceAndPath(ChannelingOverhaul.ID, "armor_conductivity"),
+            ResourceLocation.fromNamespaceAndPath(ChannelingOverhaul.ID, "armor_conductivity"),
             Registries.ITEM,
             Codec.doubleRange(0.0, 10.0).fieldOf("bonus").codec(),
         )

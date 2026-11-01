@@ -1,13 +1,11 @@
 package com.equi.channelingoverhaul.discharge
 
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.SynchedEntityData
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.storage.ValueInput
-import net.minecraft.world.level.storage.ValueOutput
 
 /**
  * The bolt of a strong discharge, only for the eye. A vanilla `LightningBolt`, even a visual-only one,
@@ -20,6 +18,11 @@ class DischargeBolt(type: EntityType<out DischargeBolt>, level: Level) : Entity(
     /** Shape of the zigzag. Each side rolls its own, as vanilla does for its bolts. */
     val seed: Long = random.nextLong()
     private var age = 0
+
+    init {
+        // Reaches 128 blocks up from a zero-size box, like a vanilla bolt
+        noCulling = true
+    }
 
     override fun tick() {
         super.tick()
@@ -34,11 +37,11 @@ class DischargeBolt(type: EntityType<out DischargeBolt>, level: Level) : Entity(
 
     override fun defineSynchedData(entityData: SynchedEntityData.Builder) {}
 
-    override fun readAdditionalSaveData(input: ValueInput) {}
+    override fun readAdditionalSaveData(tag: CompoundTag) {}
 
-    override fun addAdditionalSaveData(output: ValueOutput) {}
+    override fun addAdditionalSaveData(tag: CompoundTag) {}
 
-    override fun hurtServer(level: ServerLevel, source: DamageSource, damage: Float): Boolean = false
+    override fun hurt(source: DamageSource, damage: Float): Boolean = false
 
     companion object {
         const val LIFETIME_TICKS = 8

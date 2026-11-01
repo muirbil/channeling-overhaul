@@ -1,21 +1,15 @@
 package com.equi.channelingoverhaul.gametest
 
 import com.equi.channelingoverhaul.ChannelingOverhaul
-import net.minecraft.core.Holder
-import net.minecraft.core.registries.Registries
-import net.minecraft.gametest.framework.FunctionGameTestInstance
+import net.minecraft.gametest.framework.BeforeBatch
+import net.minecraft.gametest.framework.GameTestGenerator
 import net.minecraft.gametest.framework.GameTestHelper
-import net.minecraft.gametest.framework.TestData
-import net.minecraft.gametest.framework.TestEnvironmentDefinition
-import net.minecraft.resources.Identifier
-import net.minecraft.resources.ResourceKey
+import net.minecraft.gametest.framework.TestFunction
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Rotation
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.event.RegisterGameTestsEvent
-import net.neoforged.neoforge.gametest.GameTestHooks
-import net.neoforged.neoforge.registries.RegisterEvent
-import java.util.function.Consumer
 
 /**
  * Game tests, run with `./gradlew runGameTestServer`. They load the real data packs,
@@ -27,8 +21,12 @@ import java.util.function.Consumer
  */
 @EventBusSubscriber(modid = ChannelingOverhaul.ID)
 object ModGameTests {
+    private const val RAIN_BATCH = "rain"
+    private const val CLEAR_BATCH = "clear"
+    private const val WEATHER_TICKS = 20_000_000
+
     /** The weather of [RAIN] stays for the batches after it, so tests that depend on it set their own. */
-    private enum class Environment { DEFAULT, RAIN, CLEAR }
+    private enum class Environment(val batch: String) { DEFAULT("default"), RAIN(RAIN_BATCH), CLEAR(CLEAR_BATCH) }
 
     private class Test(
         val name: String,
@@ -78,37 +76,31 @@ object ModGameTests {
         Test("windup_above_cap", LightningGameTests::windupAboveCap, Environment.RAIN, "station", 100, skyAccess = true),
     )
 
-    private fun id(path: String) = Identifier.fromNamespaceAndPath(ChannelingOverhaul.ID, path)
-
-    @SubscribeEvent
-    fun onRegister(event: RegisterEvent) {
-        if (!GameTestHooks.isGametestEnabled()) return
-        event.register(Registries.TEST_FUNCTION) { helper ->
-            for (test in TESTS) helper.register(id(test.name), Consumer<GameTestHelper> { test.function(it) })
-        }
-    }
-
-    @SubscribeEvent
-    fun onRegisterTests(event: RegisterGameTestsEvent) {
-        if (!GameTestHooks.isGametestEnabled()) return
-        val environments: Map<Environment, Holder<TestEnvironmentDefinition<*>>> = mapOf(
-            Environment.DEFAULT to event.registerEnvironment(id("default")),
-            Environment.RAIN to event.registerEnvironment(
-                id("rain"),
-                TestEnvironmentDefinition.Weather(TestEnvironmentDefinition.Weather.Type.RAIN),
-            ),
-            Environment.CLEAR to event.registerEnvironment(
-                id("clear"),
-                TestEnvironmentDefinition.Weather(TestEnvironmentDefinition.Weather.Type.CLEAR),
-            ),
+    /** Each environment is a batch of its own; `GameTestRegistry` needs a static method on an `object`. */
+    @JvmStatic
+    @GameTestGenerator
+    fun tests(): Collection<TestFunction> = TESTS.map { test ->
+        TestFunction(
+            test.environment.batch, test.name, "${ChannelingOverhaul.ID}:${test.structure}", Rotation.NONE,
+            test.maxTicks, 0L, true, false, 1, 1, test.skyAccess, test.function,
         )
-        for (test in TESTS) {
-            val data = TestData(
-                environments.getValue(test.environment), id(test.structure), test.maxTicks, 0, true,
-                Rotation.NONE, false, 1, 1, test.skyAccess, 0,
-            )
-            val function = ResourceKey.create(Registries.TEST_FUNCTION, id(test.name))
-            event.registerTest(id(test.name), FunctionGameTestInstance(function, data))
-        }
     }
+
+    /** The rain level rises slowly on its own, and `isRaining` waits for it. */
+    @JvmStatic
+    @BeforeBatch(batch = RAIN_BATCH)
+    fun rain(level: ServerLevel) {
+        level.setWeatherParameters(0, WEATHER_TICKS, true, false)
+        level.setRainLevel(1.0f)
+    }
+
+    @JvmStatic
+    @BeforeBatch(batch = CLEAR_BATCH)
+    fun clear(level: ServerLevel) {
+        level.setWeatherParameters(WEATHER_TICKS, 0, false, false)
+        level.setRainLevel(0.0f)
+    }
+
+    @SubscribeEvent
+    fun onRegisterTests(event: RegisterGameTestsEvent) = event.register(ModGameTests::class.java)
 }

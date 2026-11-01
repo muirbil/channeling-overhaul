@@ -28,9 +28,10 @@ import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.LightningBolt
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.ai.attributes.Attributes
-import net.minecraft.world.entity.monster.zombie.Zombie
+import net.minecraft.world.entity.monster.Zombie
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
+import net.minecraft.world.item.ArmorItem
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.enchantment.Enchantments
@@ -130,7 +131,7 @@ object DischargeGameTests {
         helper.setBlock(2, 1, 4, Blocks.WATER)
         val wet = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, 2, 1, 4)
         wet.setItemSlot(EquipmentSlot.HEAD, ItemStack(Items.GOLDEN_HELMET))
-        wet.setItemSlot(EquipmentSlot.FEET, ItemStack(Items.COPPER_BOOTS))
+        wet.setItemSlot(EquipmentSlot.FEET, ItemStack(Items.GOLDEN_BOOTS))
         wet.setItemSlot(EquipmentSlot.MAINHAND, ItemStack(Items.IRON_SWORD))
         val dry = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, 6, 1, 4)
         dry.setItemSlot(EquipmentSlot.HEAD, ItemStack(Items.TURTLE_HELMET))
@@ -140,12 +141,12 @@ object DischargeGameTests {
             val p = ModConfig.params
             val wetBonuses = DischargeTargets.armorBonuses(wet)
             helper.assertTrue(wetBonuses.sorted() == listOf(0.15, 0.15), "wet zombie armor: $wetBonuses")
-            helper.assertTrue(wet.isInWaterOrRain, "the zombie is not wet")
-            val wetHit = ChargeMath.discharge(10.0, 16.0, wetBonuses, wet.isInWaterOrRain, p)!!
+            helper.assertTrue(wet.isInWaterRainOrBubble, "the zombie is not wet")
+            val wetHit = ChargeMath.discharge(10.0, 16.0, wetBonuses, wet.isInWaterRainOrBubble, p)!!
             helper.assertTrue(abs(wetHit.vulnerability - 1.55) < 1e-9 && wetHit.conductor, "wet zombie: $wetHit")
             val dryBonuses = DischargeTargets.armorBonuses(dry)
             helper.assertTrue(dryBonuses == listOf(0.0, 0.0, 0.0), "dry zombie armor: $dryBonuses")
-            val dryHit = ChargeMath.discharge(10.0, 16.0, dryBonuses, dry.isInWaterOrRain, p)!!
+            val dryHit = ChargeMath.discharge(10.0, 16.0, dryBonuses, dry.isInWaterRainOrBubble, p)!!
             helper.assertTrue(dryHit.vulnerability == 1.0 && !dryHit.conductor, "dry zombie: $dryHit")
             helper.succeed()
         }
@@ -154,25 +155,22 @@ object DischargeGameTests {
     /** Every vanilla piece of humanoid armor is in `armor_conductivity`, with the bonus of its material. */
     fun armorConductivityCoversArmor(helper: GameTestHelper) {
         val bonusByMaterial = listOf(
-            "golden_" to 0.15, "copper_" to 0.15, "netherite_" to 0.12, "iron_" to 0.10, "chainmail_" to 0.10,
+            "golden_" to 0.15, "netherite_" to 0.12, "iron_" to 0.10, "chainmail_" to 0.10,
             "leather_" to 0.0, "diamond_" to 0.0, "turtle_" to 0.0,
         )
         val wrong = mutableListOf<String>()
         var checked = 0
         for (item in BuiltInRegistries.ITEM) {
             val id = BuiltInRegistries.ITEM.getKey(item)
-            val stack = ItemStack(item)
-            val slot = stack.get(DataComponents.EQUIPPABLE)?.slot() ?: continue
-            val armor = stack.get(DataComponents.ATTRIBUTE_MODIFIERS)?.modifiers()
-                ?.any { it.attribute() == Attributes.ARMOR && it.modifier().amount() > 0.0 } ?: false
-            if (id.namespace != "minecraft" || slot.type != EquipmentSlot.Type.HUMANOID_ARMOR || !armor) continue
+            val armor = item as? ArmorItem ?: continue
+            if (id.namespace != "minecraft" || armor.equipmentSlot.type != EquipmentSlot.Type.HUMANOID_ARMOR || armor.defense <= 0) continue
             checked++
             val expected = bonusByMaterial.firstOrNull { id.path.startsWith(it.first) }?.second
-            val actual = stack.typeHolder().getData(ModDataMaps.ARMOR_CONDUCTIVITY)
+            val actual = ItemStack(item).itemHolder.getData(ModDataMaps.ARMOR_CONDUCTIVITY)
             if (expected == null || actual != expected) wrong += "${id.path}: $actual, expected $expected"
         }
-        // 7 materials x 4 pieces + the turtle shell
-        helper.assertTrue(checked == 29, "checked $checked armor pieces")
+        // 6 materials x 4 pieces + the turtle shell
+        helper.assertTrue(checked == 25, "checked $checked armor pieces")
         helper.assertTrue(wrong.isEmpty(), wrong.joinToString("; "))
         helper.succeed()
     }
@@ -185,7 +183,7 @@ object DischargeGameTests {
         val p = ModConfig.params
 
         fun message(source: DamageSource): TranslatableContents {
-            helper.assertTrue(zombie.hurtServer(level, source, 0.5f), "the zombie took no damage")
+            helper.assertTrue(zombie.hurt(source, 0.5f), "the zombie took no damage")
             val contents = zombie.combatTracker.deathMessage.contents as TranslatableContents
             helper.assertTrue(Language.getInstance().has(contents.key), "no translation for ${contents.key}")
             return contents
@@ -198,8 +196,8 @@ object DischargeGameTests {
             helper.assertTrue(actual.take(args.size) == args.toList(), "$name: args $actual")
         }
 
-        val victim = zombie.displayName.string
-        val killer = owner.displayName.string
+        val victim = zombie.displayName!!.string
+        val killer = owner.displayName!!.string
         val plain = tridentStack(helper, charge = 0.0)
         val named = tridentStack(helper, charge = 0.0).apply { set(DataComponents.CUSTOM_NAME, Component.literal("Zeus")) }
         val thrown = ThrownTrident(level, owner, plain)
@@ -215,7 +213,7 @@ object DischargeGameTests {
         check("no owner", source(unowned, plain, 5.0, emptyList()), "", victim)
         // A full charge into a zombie in a gold set: only the direct discharge is "vaporized" or "metal"
         for (type in listOf(ModDamageTypes.DISCHARGE_CHAIN, ModDamageTypes.DISCHARGE_WATER)) {
-            val suffix = type.identifier().path.removePrefix("discharge")
+            val suffix = type.location().path.removePrefix("discharge")
             check(suffix, DischargeTargets.source(level, type, thrown, owner), "$suffix.player", victim, killer)
             check("$suffix, no owner", DischargeTargets.source(level, type, unowned, null), suffix, victim)
         }
@@ -259,7 +257,7 @@ object DischargeGameTests {
 
     internal fun assertLost(helper: GameTestHelper, entity: LivingEntity, expected: Double, tolerance: Double) {
         val lost = entity.maxHealth - entity.health
-        helper.assertTrue(abs(lost - expected) < tolerance, "${entity.displayName.string} lost $lost health, expected $expected")
+        helper.assertTrue(abs(lost - expected) < tolerance, "${entity.displayName!!.string} lost $lost health, expected $expected")
     }
 
     /** Entities of [type] that appear in the test area, counted once each. */

@@ -32,7 +32,7 @@ class ConductivityDataTest {
 
     @Test
     fun `lightning rods and water have their own types`() {
-        assertEquals("lightning_rod", values.getAsJsonObject("#minecraft:lightning_rods").get("type").asString)
+        assertEquals("lightning_rod", values.getAsJsonObject("minecraft:lightning_rod").get("type").asString)
         assertEquals("water", values.getAsJsonObject("minecraft:water").get("type").asString)
     }
 

@@ -7,7 +7,7 @@ import com.equi.channelingoverhaul.core.Precipitation
 import com.equi.channelingoverhaul.core.SourceScan
 import com.equi.channelingoverhaul.core.Weather
 import net.minecraft.core.BlockPos
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.biome.Biome
 
@@ -33,7 +33,7 @@ data class StationReading(
         /** Reads sky and weather at [pos] now, with sources from [scan]: a stuck trident or a winding up player. */
         fun at(level: Level, pos: BlockPos, channeling: Int, scan: SourceScan, p: ChargeParams): StationReading {
             val canSeeSky = level.canSeeSky(pos)
-            val precipitation = when (level.getBiome(pos).value().getPrecipitationAt(pos, level.seaLevel)) {
+            val precipitation = when (level.getBiome(pos).value().getPrecipitationAt(pos)) {
                 Biome.Precipitation.RAIN -> Precipitation.RAIN
                 Biome.Precipitation.SNOW -> Precipitation.SNOW
                 else -> Precipitation.NONE

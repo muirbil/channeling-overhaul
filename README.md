@@ -6,8 +6,6 @@ Channeling stops being "lightning in a thunderstorm" and becomes a charge mechan
 
 > **Unofficial addon for Apothic Enchanting, not affiliated with or endorsed by Shadows_of_Fire.**
 
-Developed with the help of Claude Code (AI coding assistant).
-
 ![Chain discharge through water](docs/media/hero.gif)
 
 *Chain discharge through water*
@@ -16,14 +14,14 @@ Developed with the help of Claude Code (AI coding assistant).
 
 | Mod | Version |
 | --- | --- |
-| Minecraft | 26.1.2 (any 26.1.x from 26.1.2, below 26.2) |
-| NeoForge | 26.1.2.64-beta or newer (built against 26.1.2.124) |
-| Kotlin for Forge | 6.4 or newer (built against 6.4.0) |
-| Apothic Enchanting | 2.1.0 or newer |
-| Placebo | required by Apothic Enchanting; built against 10.0.0 |
-| Apothic Attributes | required by Apothic Enchanting; built against 3.0.1 |
+| Minecraft | 1.21.1 |
+| NeoForge | 21.1.235 or newer (built against 21.1.265) |
+| Kotlin for Forge | 5.12 or newer, below 6 (built against 5.12.0) |
+| Apothic Enchanting | 1.6.4 or newer |
+| Placebo | required by Apothic Enchanting; built against 9.9.4 |
+| Apothic Attributes | required by Apothic Enchanting; built against 2.11.0 |
 
-Apothic Attributes 3.0.0 crashes on NeoForge 26.1.2.70-beta and newer when a mob is hit, regardless of this mod. Use 3.0.1 or newer there.
+This is the 1.21.1 build. The build for Minecraft 26.1 is on the [`master` branch](../../tree/master).
 
 Install the mod on both the server and the client.
 
@@ -76,7 +74,7 @@ While you hold right click with the trident, it tops up at half the inflow at yo
 - A miss into a block keeps the charge. So does a hit blocked by a shield or one that deals no damage.
 - Melee attacks never spend the charge.
 - Damage to the target: **D = 0.6 × Q × M**. M is the target's vulnerability:
-  - +0.15 per piece of gold or copper armor;
+  - +0.15 per piece of gold armor;
   - +0.12 per piece of netherite;
   - +0.10 per piece of iron or chainmail;
   - +0.25 if the target is wet (in water or in rain).
@@ -108,7 +106,7 @@ If the primary target stands in water, the discharge also hits every living enti
 ### Visuals and sound
 
 - Sparks fly from copper, rods and the sky to a charging trident.
-- The trident sprite glows in four steps as it fills (in the inventory, on the ground, in item frames and on shelves; not yet in hand).
+- The trident sprite glows in four steps as it fills (in the inventory, on the ground, and in item frames; not yet in hand).
 - A full trident chimes once.
 - Chains draw a zigzag of sparks between targets.
 
@@ -117,10 +115,12 @@ If the primary target stands in water, the discharge also hits every living enti
 1. Pick a spot with **open sky**. Nothing above the trident, not even glass.
 2. Lay a **6×6 platform of waxed copper**. Waxed copper doesn't oxidize, so it keeps its conductivity.
 3. Put a **lightning rod** on a copper block in the platform's second row from the near edge.
-4. Optionally, put **copper lanterns** on the corners.
+4. Optionally, put **copper bulbs** on the corners.
 5. Throw the trident into the same row, 2 blocks from the rod, and wait, best of all for a thunderstorm.
 
 ![A charging station in game](docs/media/station.png)
+
+The screenshot comes from the 26.1 build, with copper lanterns on the corners. 1.21.1 has no copper lanterns: put copper bulbs (`copper_bulb`) in the same spots. They have the same conductivity, so the numbers in the table below don't change.
 
 Top view; the top row is the far edge in the screenshot:
 
@@ -128,7 +128,7 @@ Top view; the top row is the far edge in the screenshot:
   L # # # # L      #  waxed copper
   # # # # # #      x  trident
   # # # # # #      R  lightning rod on a copper block
-  # # # # # #      L  copper lanterns (optional)
+  # # # # # #      L  copper bulbs (optional)
   # # x # R #
   L # # # # L
 ```
@@ -137,12 +137,12 @@ How this station charges, with the default config, an empty trident, a rain biom
 
 | Level | Radius R | Antenna A | To 95% in rain | To 95% in a thunderstorm |
 | --- | --- | --- | --- | --- |
-| I | 4.0 | 2.47 (2.54 with lanterns) | 39 s (38 s with lanterns) | 13 s |
+| I | 4.0 | 2.47 (2.54 with bulbs) | 39 s (38 s with bulbs) | 13 s |
 | V | 6.5 | 3.00, the cap | 1 min 20 s | 27 s |
 | X | 8.3 | 3.00, the cap | 2 min 20 s | 47 s |
 | XX | 10.9 | 3.00, the cap | 4 min 20 s | 1 min 27 s |
 
-From level V up the platform alone reaches the ×3 cap, so more copper doesn't help; the lanterns only matter at low levels. Under bare sky the same trident needs three times as long: 4 minutes for V and 13 minutes for XX in rain. A lightning strike into the rod adds another +50% Qmax at once.
+From level V up the platform alone reaches the ×3 cap, so more copper doesn't help; the bulbs only matter at low levels. Under bare sky the same trident needs three times as long: 4 minutes for V and 13 minutes for XX in rain. A lightning strike into the rod adds another +50% Qmax at once.
 
 Water source blocks nearby give a small bonus (up to +0.3 to A), but they aren't required.
 
@@ -215,7 +215,7 @@ The file is `serverconfig/channeling_overhaul-server.toml` inside the world fold
 | `discharge.wetBonus` | 0.25 | 0 – 10 | Bonus to M for a wet target |
 | `discharge.strongDischarge` | 0.5 | 0 – 1 | Fraction of Qmax for the visual lightning and the horn |
 | `discharge.overcharged` | 0.9 | 0 – 1 | Fraction of Qmax for the "vaporized" death message |
-| `discharge.deathMessages` | `NAMED` | `VANILLA`, `NAMED`, `ALL` | Who else sees that a mob was killed by a discharge: nobody, everyone for named and tamed mobs, everyone for any mob. Respects the `show_death_messages` game rule |
+| `discharge.deathMessages` | `NAMED` | `VANILLA`, `NAMED`, `ALL` | Who else sees that a mob was killed by a discharge: nobody, everyone for named and tamed mobs, everyone for any mob. Respects the `showDeathMessages` game rule |
 | `sound.hornVolumeBase` | 1.0 | 0 – 100 | Horn volume = hornVolumeBase + hornVolumePerCharge · Q / Qmax (about 16 blocks of range per unit) |
 | `sound.hornVolumePerCharge` | 4.0 | 0 – 100 | |
 | `sound.crackleVolume` | 0.3 | 0 – 10 | Volume of the crackle of weak discharges and chain hops |
@@ -247,7 +247,7 @@ The file is `config/channeling_overhaul-client.toml`.
 
 ## Data packs
 
-Everything below can be changed by a data pack without touching code.
+Everything below can be changed by a data pack without touching code, except the enchantment levels: those are in a config file.
 
 ### Conductors: `channeling_overhaul:conductivity`
 
@@ -257,7 +257,7 @@ A block data map at `data/channeling_overhaul/data_maps/block/conductivity.json`
 - `conductivity` (0 – 10, default 1.0) is the conductivity c and only matters for copper.
 - A `water` block counts only as a source block.
 
-The mod's own entries use the block tags `channeling_overhaul:copper/unaffected`, `…/exposed`, `…/weathered` and `…/oxidized`, plus `#minecraft:lightning_rods` and `minecraft:water`. To make another mod's copper count, add it to one of these tags, or give it its own entry:
+The mod's own entries use the block tags `channeling_overhaul:copper/unaffected`, `…/exposed`, `…/weathered` and `…/oxidized`, plus `minecraft:lightning_rod` and `minecraft:water`. To make another mod's copper count, add it to one of these tags, or give it its own entry:
 
 ```json
 {
@@ -294,23 +294,21 @@ An entity type tag at `data/channeling_overhaul/tags/entity_type/discharge_immun
 }
 ```
 
-### Enchantment levels: Apothic Enchanting's `enchantment_info`
+### Enchantment levels: Apothic Enchanting's `enchantments.cfg`
 
-The mod raises Channeling to level XXXI with an entry in `data/apothic_enchanting/data_maps/enchantment/enchantment_info.json`, and sets `max_level: 31` in `data/minecraft/enchantment/channeling.json`. Override the entry to change the levels or the power the enchanting table needs:
+On 1.21.1 Apothic Enchanting keeps these numbers in `config/apotheosis/enchantments.cfg`. The mod sets `max_level: 31` in `data/minecraft/enchantment/channeling.json`, and after every load of that file it replaces the Channeling entry: max level 31, loot level 1, level cap 31, and the power curve below. So at first the `minecraft:channeling` section of the file has no effect.
 
-```json
-{
-  "values": {
-    "minecraft:channeling": {
-      "max_level": 31,
-      "max_loot_level": 1,
-      "level_cap": 31,
-      "min_power": {
-        "type": "expression",
-        "expression": "IF(x <= 25, 4 * x, 100 + 15 * (x - 25))"
-      }
-    }
-  }
+To use your own numbers, fill in `Min Power Function` there: from then on the mod leaves the whole section alone, and all its values apply.
+
+**Set `Max Loot Level` to 1 in the same section.** Apothic Enchanting now takes every value from the file, and with the mod installed it writes this one as 31, the `max_level` of `channeling.json`. Left at 31, books with Channeling of any level up to XXXI turn up in chests and villager trades. Fishing stays at level I either way: its power is below the `min_cost` of level II.
+
+```
+"minecraft:channeling" {
+    I:"Max Level"=31
+    I:"Max Loot Level"=1
+    I:"Forced Level Cap"=31
+    S:"Max Power Function"=
+    S:"Min Power Function"=IF(x <= 25, 4 * x, 100 + 15 * (x - 25))
 }
 ```
 
@@ -331,7 +329,7 @@ The full design, with all formulas and the reasoning behind them, is in [DESIGN.
 
 ## Building from source
 
-You need JDK 25.
+You need JDK 21.
 
 ```bash
 ./gradlew build

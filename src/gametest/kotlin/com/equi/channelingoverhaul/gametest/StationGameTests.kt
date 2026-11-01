@@ -20,7 +20,7 @@ import net.minecraft.gametest.framework.GameTestHelper
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.commands.FillBiomeCommand
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.enchantment.Enchantments
@@ -41,7 +41,7 @@ object StationGameTests {
     private const val DESPAWN_TICKS = 1200
 
     /** Copper, oxidized or not, waxed or not, has data; these copper-named blocks don't. */
-    private val NOT_CONDUCTORS = setOf("copper_ore", "deepslate_copper_ore", "raw_copper_block", "copper_torch", "copper_wall_torch")
+    private val NOT_CONDUCTORS = setOf("copper_ore", "deepslate_copper_ore", "raw_copper_block")
 
     fun conductivityCoversCopper(helper: GameTestHelper) {
         val wrong = mutableListOf<String>()
@@ -59,18 +59,18 @@ object StationGameTests {
                 "exposed" in path -> Conductivity(ConductorType.COPPER, 0.75)
                 else -> Conductivity(ConductorType.COPPER, 1.0)
             }
-            val actual = block.defaultBlockState().typeHolder().getData(ModDataMaps.CONDUCTIVITY)
+            val actual = block.defaultBlockState().blockHolder.getData(ModDataMaps.CONDUCTIVITY)
             if (actual != expected) wrong += "$path: $actual, expected $expected"
         }
-        val water = Blocks.WATER.defaultBlockState().typeHolder().getData(ModDataMaps.CONDUCTIVITY)
+        val water = Blocks.WATER.defaultBlockState().blockHolder.getData(ModDataMaps.CONDUCTIVITY)
         helper.assertTrue(water?.type == ConductorType.WATER, "water: $water")
-        // 14 copper families x 4 stages x waxed + 8 lightning rods + 5 others
-        helper.assertTrue(checked == 125, "checked $checked copper blocks")
+        // 9 copper families x 4 stages x waxed + the lightning rod + 3 others
+        helper.assertTrue(checked == 76, "checked $checked copper blocks")
         helper.assertTrue(wrong.isEmpty(), wrong.joinToString("; "))
         helper.succeed()
     }
 
-    /** Waxed copper keeps its stage; rods count without oxidation; source water counts. */
+    /** Waxed copper keeps its stage; a rod and source water count. */
     fun waxedCopper(helper: GameTestHelper) {
         fillBiome(helper, Biomes.PLAINS)
         stoneFloor(helper)
@@ -78,7 +78,7 @@ object StationGameTests {
         helper.setBlock(5, 0, 4, Blocks.WAXED_EXPOSED_COPPER)
         helper.setBlock(4, 0, 3, Blocks.WAXED_WEATHERED_COPPER)
         helper.setBlock(4, 0, 5, Blocks.WAXED_OXIDIZED_COPPER)
-        helper.setBlock(6, 1, 6, Blocks.WAXED_OXIDIZED_LIGHTNING_ROD)
+        helper.setBlock(6, 1, 6, Blocks.LIGHTNING_ROD)
         helper.setBlock(2, 0, 2, Blocks.WATER)
         withStuckTrident(helper, charge = 0.0) { trident ->
             val reading = reading(trident)
@@ -142,10 +142,10 @@ object StationGameTests {
         }
     }
 
-    /** A lightning rod holds it too, whatever the oxidation; once the rod is gone the trident returns. */
+    /** A lightning rod holds it too; once the rod is gone the trident returns. */
     fun loyaltyHeldByRod(helper: GameTestHelper) {
         stoneFloor(helper)
-        helper.setBlock(4, 1, 4, Blocks.OXIDIZED_LIGHTNING_ROD)
+        helper.setBlock(4, 1, 4, Blocks.LIGHTNING_ROD)
         val owner = mockOwner(helper)
         var trident: ThrownTrident? = null
         helper.runAfterDelay(SPAWN_TICK) { trident = dropTrident(helper, charge = 0.0, thrower = owner, loyalty = 3, y = 3.0) }

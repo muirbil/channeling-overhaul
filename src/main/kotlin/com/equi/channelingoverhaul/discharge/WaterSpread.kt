@@ -35,7 +35,7 @@ object WaterSpread {
             val base = ChargeMath.spreadBase(charge, distance, radius, p)
             val m = DischargeTargets.vulnerability(target, p)
             hit += target.id
-            target.hurtServer(level, source, (base * m).toFloat())
+            target.hurt(source, (base * m).toFloat())
             DischargeEffects.waterHit(level, target)
             DischargeEffects.debug(level, origin, "chat.channeling_overhaul.water.debug", target.displayName, distance, base, m, base * m)
         }

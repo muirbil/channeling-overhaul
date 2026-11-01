@@ -4,37 +4,37 @@ import com.equi.channelingoverhaul.ChannelingOverhaul
 import com.equi.channelingoverhaul.discharge.DischargeBolt
 import com.equi.channelingoverhaul.registry.ModEntities
 import com.mojang.blaze3d.vertex.PoseStack
-import net.minecraft.client.renderer.SubmitNodeCollector
+import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.client.renderer.entity.LightningBoltRenderer
-import net.minecraft.client.renderer.entity.state.LightningBoltRenderState
-import net.minecraft.client.renderer.state.level.CameraRenderState
+import net.minecraft.client.renderer.texture.TextureAtlas
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.LightningBolt
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.client.event.EntityRenderersEvent
 
 /**
- * Draws a [DischargeBolt] as a vanilla lightning bolt. The vanilla renderer builds the zigzag from the
- * seed in its render state alone, so it draws ours as is, and follows vanilla if the geometry changes.
+ * Draws a [DischargeBolt] as a vanilla lightning bolt. The vanilla renderer takes a `LightningBolt` but builds
+ * the zigzag from its seed alone, so a bolt that never enters the world carries ours, and we follow vanilla
+ * if the geometry changes.
  */
-class DischargeBoltRenderer(context: EntityRendererProvider.Context) :
-    EntityRenderer<DischargeBolt, LightningBoltRenderState>(context) {
+class DischargeBoltRenderer(context: EntityRendererProvider.Context) : EntityRenderer<DischargeBolt>(context) {
     private val zigzag = LightningBoltRenderer(context)
+    private var carrier: LightningBolt? = null
 
-    override fun createRenderState() = LightningBoltRenderState()
-
-    override fun extractRenderState(entity: DischargeBolt, state: LightningBoltRenderState, partialTicks: Float) {
-        super.extractRenderState(entity, state, partialTicks)
-        state.seed = entity.seed
+    override fun render(entity: DischargeBolt, yaw: Float, partialTicks: Float, poseStack: PoseStack, buffer: MultiBufferSource, light: Int) {
+        val bolt = carrier?.takeIf { it.level() === entity.level() }
+            ?: EntityType.LIGHTNING_BOLT.create(entity.level())?.also { carrier = it }
+            ?: return
+        bolt.seed = entity.seed
+        zigzag.render(bolt, yaw, partialTicks, poseStack, buffer, light)
     }
 
-    override fun submit(state: LightningBoltRenderState, poseStack: PoseStack, collector: SubmitNodeCollector, camera: CameraRenderState) =
-        zigzag.submit(state, poseStack, collector, camera)
-
-    /** The bolt reaches 128 blocks up from a point: never cull it by its zero-size box. */
-    override fun affectedByCulling(entity: DischargeBolt) = false
+    override fun getTextureLocation(entity: DischargeBolt): ResourceLocation = TextureAtlas.LOCATION_BLOCKS
 
     @EventBusSubscriber(modid = ChannelingOverhaul.ID, value = [Dist.CLIENT])
     object Registration {

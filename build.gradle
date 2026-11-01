@@ -24,11 +24,11 @@ tasks.named('wrapper', Wrapper).configure {
 version = mod_version
 group = mod_group_id
 
-base.archivesName = mod_id
+base.archivesName = "${mod_id}-${minecraft_version}"
 
-// Mojang ships Java 25 to end users in 26.1, so mods should target Java 25.
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
-compileKotlin.compilerOptions.jvmTarget = JvmTarget.JVM_25
+// Minecraft 1.21.1 runs on Java 21.
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+compileKotlin.compilerOptions.jvmTarget = JvmTarget.JVM_21
 
 // Game tests and their structures. Part of the mod in dev runs (see `mods` below), not in the release jar,
 // which is built from `main` alone.
@@ -95,7 +95,7 @@ neoForge {
         }
 
         data {
-            clientData()
+            data()
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
@@ -151,7 +151,7 @@ repositories {
 }
 
 dependencies {
-    // '!!' pins a version strictly: a transitive request can't move it (Apothic Enchanting asks for Attributes 3.0.0)
+    // '!!' pins a version strictly: a transitive request can't move it
     // Must use the '-neoforge' version on NeoForge. If on regular Forge, omit the '-neoforge'
     implementation "thedarkcolour:kotlinforforge-neoforge:${kff_version}!!"
 

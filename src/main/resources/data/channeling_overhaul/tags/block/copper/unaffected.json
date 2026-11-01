@@ -9,11 +9,6 @@
     "minecraft:copper_door",
     "minecraft:copper_trapdoor",
     "minecraft:copper_bulb",
-    "minecraft:copper_bars",
-    "minecraft:copper_chain",
-    "minecraft:copper_lantern",
-    "minecraft:copper_chest",
-    "minecraft:copper_golem_statue",
     "minecraft:waxed_copper_block",
     "minecraft:waxed_chiseled_copper",
     "minecraft:waxed_cut_copper",
@@ -22,11 +17,6 @@
     "minecraft:waxed_copper_grate",
     "minecraft:waxed_copper_door",
     "minecraft:waxed_copper_trapdoor",
-    "minecraft:waxed_copper_bulb",
-    "minecraft:waxed_copper_bars",
-    "minecraft:waxed_copper_chain",
-    "minecraft:waxed_copper_lantern",
-    "minecraft:waxed_copper_chest",
-    "minecraft:waxed_copper_golem_statue"
+    "minecraft:waxed_copper_bulb"
   ]
 }

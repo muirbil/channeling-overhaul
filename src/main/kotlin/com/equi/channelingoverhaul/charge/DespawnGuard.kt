@@ -1,8 +1,8 @@
 package com.equi.channelingoverhaul.charge
 
 import com.equi.channelingoverhaul.data.TridentCharge
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.AbstractArrow
+import net.minecraft.world.entity.projectile.ThrownTrident
 
 /**
  * Vanilla despawns a stuck trident after 1200 ticks unless it has Loyalty and can be picked up.

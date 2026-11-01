@@ -4,7 +4,7 @@ import com.equi.channelingoverhaul.core.StationView
 import com.equi.channelingoverhaul.core.VisualParams
 import com.equi.channelingoverhaul.core.Visuals
 import com.equi.channelingoverhaul.registry.ModAttachments
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 
 /** Keeps the synced [StationView] of a stuck trident, sending it again only on a noticeable change. */
 object StationSync {

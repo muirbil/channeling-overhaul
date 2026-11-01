@@ -38,13 +38,13 @@ object DischargeEffects {
     }
 
     /** One line of `debug.dischargeChat` to the owner: translation [key] with numbers formatted to 2 decimals. */
-    fun debug(level: ServerLevel, origin: DischargeOrigin, key: String, vararg args: Any) {
+    fun debug(level: ServerLevel, origin: DischargeOrigin, key: String, vararg args: Any?) {
         if (!ModConfig.rules.debugChat) return
         debug(DischargeTargets.debugReceiver(level, origin), key, *args)
     }
 
     /** One line of `debug.dischargeChat` to [receiver], when the flag is on. */
-    fun debug(receiver: ServerPlayer?, key: String, vararg args: Any) {
+    fun debug(receiver: ServerPlayer?, key: String, vararg args: Any?) {
         if (!ModConfig.rules.debugChat || receiver == null) return
         val formatted = args.map { if (it is Double) String.format(Locale.ROOT, "%.2f", it) else it }
         receiver.sendSystemMessage(Component.translatable(key, *formatted.toTypedArray()))

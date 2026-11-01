@@ -13,10 +13,9 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.gametest.framework.GameTestHelper
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.Entity
-import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.enchantment.Enchantments
@@ -60,7 +59,7 @@ object LightningGameTests {
         bolts = {
             bolt(helper, Vec3(8.5, 1.0, 8.5))
             bolt(helper, Vec3(6.5, 1.0, 4.5), visualOnly = true)
-            spawn(helper, ModEntities.DISCHARGE_BOLT.create(helper.level, EntitySpawnReason.TRIGGERED)!!, Vec3(5.5, 1.0, 4.5))
+            spawn(helper, ModEntities.DISCHARGE_BOLT.create(helper.level)!!, Vec3(5.5, 1.0, 4.5))
         },
     ) { before, after -> after == before }
 
@@ -145,13 +144,13 @@ object LightningGameTests {
     }
 
     private fun bolt(helper: GameTestHelper, at: Vec3, visualOnly: Boolean = false) {
-        val bolt = EntityType.LIGHTNING_BOLT.create(helper.level, EntitySpawnReason.TRIGGERED)!!
+        val bolt = EntityType.LIGHTNING_BOLT.create(helper.level)!!
         bolt.setVisualOnly(visualOnly)
         spawn(helper, bolt, at)
     }
 
     private fun spawn(helper: GameTestHelper, entity: Entity, at: Vec3) {
-        entity.snapTo(helper.absoluteVec(at))
+        entity.moveTo(helper.absoluteVec(at))
         helper.level.addFreshEntity(entity)
     }
 

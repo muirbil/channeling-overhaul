@@ -2,7 +2,7 @@
 
 > Russian translation: [DESIGN.ru.md](DESIGN.ru.md). This English version is the source of truth.
 
-Document version: 29 October 2026
+Document version: 1 November 2026
 
 ## Overview
 
@@ -26,7 +26,7 @@ The mod turns Channeling from "lightning in a thunderstorm" into a charge mechan
 | Apotheosis | Affixes, world tiers | Optional, only for future integration |
 | GeckoLib | Animated models | Not needed: all visuals use vanilla particles |
 
-Target version: Minecraft 26.1.2, NeoForge 26.1.2.124, Java 25, Apothic Enchanting 2.1.0 (Placebo 10.0.0, Apothic Attributes 3.0.1). Apothic Attributes 3.0.0 is incompatible with NeoForge 26.1.2.70-beta+: it crashes when a mob is hit (`LivingDamageEvent.Post.getNewDamage` was removed in 26.1.2.70-beta). The logic is written in Kotlin; mixins, if needed, are in Java, because Kotlin mixins are unreliable.
+Target version of this branch: Minecraft 1.21.1, NeoForge 21.1.265, Java 21, Kotlin for Forge 5.12.0, Apothic Enchanting 1.6.4 (Placebo 9.9.4, Apothic Attributes 2.11.0). The `master` branch holds the same mod for Minecraft 26.1. The logic is written in Kotlin; mixins, if needed, are in Java, because Kotlin mixins are unreliable.
 
 All numbers below are starting values and must live in the server config, not in code.
 
@@ -207,11 +207,10 @@ M = min(2, 1 + Σ armor bonuses + wet target bonus). The bonuses are set by an i
 | Condition | Bonus to M |
 | --- | --- |
 | Gold armor piece | +0.15 per piece |
-| Copper armor piece (1.21.9+) | +0.15 per piece |
 | Netherite armor piece | +0.12 per piece |
 | Iron or chainmail armor piece | +0.10 per piece |
 | Leather, diamond, turtle shell | 0 |
-| Target is wet (`isInWaterOrRain`: in water, including a bubble column, or in rain; there is no `isInWaterRainOrBubble` in 26.1) | +0.25 |
+| Target is wet (`isInWaterRainOrBubble`: in water, in a bubble column or in rain) | +0.25 |
 
 Examples: a full iron set gives M = 1.4, a full gold set on a wet target 1.85.
 
@@ -265,7 +264,7 @@ The water is computed from the base 0.6·Q, not from the primary target's D, and
 - Apothic Attributes rolls crits on any damage with a living attacker, unless the damage type is in the tag `apothic_attributes:cannot_critically_strike`. A player's base chance is 5%, crit damage ×1.5. The discharge crits too, as "damage affixes work" promises. If this is unwanted, it's enough to add the three types to that tag.
 - Damage is dealt through `DamageSource(type, trident, owner)`: the kill is credited to the player, Apotheosis damage affixes work, armor reduces the damage as for normal lightning.
 - Don't spawn a real `LightningBolt` for damage: it sets fires, turns villagers into witches, pigs into piglins, etc.
-- The visual lightning on a strong discharge (Q ≥ 50% Qmax) is an own entity `channeling_overhaul:discharge_bolt` (`DischargeBolt`), not a `LightningBolt`. A vanilla one with `setVisualOnly(true)` doesn't fit: in 26.1 that flag removes only fire and `thunderHit`, while the bolt still thunders for all clients within 16 chunks, powers a lightning rod and cleans the copper in the block it strikes.
+- The visual lightning on a strong discharge (Q ≥ 50% Qmax) is an own entity `channeling_overhaul:discharge_bolt` (`DischargeBolt`), not a `LightningBolt`. A vanilla one with `setVisualOnly(true)` doesn't fit: that flag removes only fire and `thunderHit`, while the bolt still thunders for all clients within 16 chunks, powers a lightning rod and cleans the copper in the block it strikes.
 - The own entity:
   - no damage, fire, effect on copper and lightning rods, and no sound;
   - lives 8 ticks, isn't saved, is tracked by clients like the vanilla one (16 chunks);
@@ -274,7 +273,7 @@ The water is computed from the base 0.6·Q, not from the primary target's D, and
 
 ### Death messages
 
-`%1$s` is the victim, `%2$s` the killer, `%3$s` the item name. The strings are needed in `en_us.json` (required) and `ru_ru.json`.
+`%1$s` is the victim, `%2$s` the killer, `%3$s` the item name. The strings are needed in `en_us.json` (required), `ru_ru.json` and `ja_jp.json`.
 
 | Case | Key | Russian | English |
 | --- | --- | --- | --- |
@@ -298,10 +297,10 @@ The chain and the water have base keys without a killer too: "%1$s became a link
 | `named` (default) | all players, if the mob has a name or is tamed (pets, horses) |
 | `all` | all players, for any mob |
 
-- The gamerule `show_death_messages` turns everything off; the mod doesn't duplicate player deaths.
+- The gamerule `showDeathMessages` turns everything off; the mod doesn't duplicate player deaths.
 - A pet's owner doesn't get the message twice. NeoForge in `TamableAnimal.die` tells the owner after `LivingDeathEvent`, so the mod skips them exactly when vanilla will do it (the pet is a `TamableAnimal`, the owner is on the server).
 
-> **Verified in 26.1.2.** The death message path: `CombatTracker.getDeathMessage` → `IDeathMessageProvider.DEFAULT` (NeoForge) → `DamageSource.getLocalizedDeathMessage`. How vanilla builds the keys:
+> **Verified in 1.21.1.** The death message path: `CombatTracker.getDeathMessage` → `IDeathMessageProvider.DEFAULT` (NeoForge) → `DamageSource.getLocalizedDeathMessage`. How vanilla builds the keys:
 > - with an attacker, the base key is used with arguments (victim, killer);
 > - `.item` takes the item from the attacker's hand, not the thrown trident;
 > - `.player` is used only when there is neither an attacker nor a direct entity.
@@ -317,13 +316,13 @@ The chain and the water have base keys without a killer too: "%1$s became a link
 
 A station is a place where the trident is stuck to charge: open sky, waxed copper around, a lightning rod nearby. The mod adds no separate station block; it's built from vanilla blocks.
 
-The canonical example is the build on [docs/media/station.png](docs/media/station.png): a 6×6 platform of waxed copper, the trident and a lightning rod on a copper block in the second row from the near edge, 2 blocks apart, copper lanterns on the corners. Top view; the top row is the far edge in the screenshot:
+The canonical example is the build on [docs/media/station.png](docs/media/station.png): a 6×6 platform of waxed copper, the trident and a lightning rod on a copper block in the second row from the near edge, 2 blocks apart, copper lanterns on the corners. The screenshot comes from the 26.1 build: 1.21.1 has no copper lanterns, and copper bulbs (`copper_bulb`) take their place, with the same position and conductivity, so the numbers of the table below don't change. Top view; the top row is the far edge in the screenshot:
 
 ```
   L # # # # L      #  waxed copper
   # # # # # #      x  trident
   # # # # # #      R  lightning rod on a copper block
-  # # # # # #      L  copper lanterns (optional)
+  # # # # # #      L  copper bulbs (optional)
   # # x # R #
   L # # # # L
 ```
@@ -332,12 +331,12 @@ How this station charges, with the default config, an empty trident, a rain biom
 
 | Level | Radius R | Antenna A | To 95% in rain | To 95% in a thunderstorm |
 | --- | --- | --- | --- | --- |
-| I | 4.0 | 2.47 (2.54 with lanterns) | 39 s (38 s with lanterns) | 13 s |
+| I | 4.0 | 2.47 (2.54 with bulbs) | 39 s (38 s with bulbs) | 13 s |
 | V | 6.5 | 3.00, the cap | 1 min 20 s | 27 s |
 | X | 8.3 | 3.00, the cap | 2 min 20 s | 47 s |
 | XX | 10.9 | 3.00, the cap | 4 min 20 s | 1 min 27 s |
 
-From level V up the platform alone reaches the ×3 cap, so more copper doesn't help; the lanterns only matter at low levels. Under bare sky the same trident needs three times as long: 4 minutes for V and 13 minutes for XX in rain. A lightning strike into the rod adds another +50% Qmax at once.
+From level V up the platform alone reaches the ×3 cap, so more copper doesn't help; the bulbs only matter at low levels. Under bare sky the same trident needs three times as long: 4 minutes for V and 13 minutes for XX in rain. A lightning strike into the rod adds another +50% Qmax at once.
 
 Water source blocks nearby give a small bonus (up to +0.3 to A), but they aren't required.
 
@@ -348,7 +347,7 @@ All visuals are built from vanilla particles and sounds; GeckoLib isn't needed.
 | What | How it looks | Implementation |
 | --- | --- | --- |
 | Charge gathering | Sparks fly from copper, lightning rods and the sky to the stuck trident | Client: "sparks in transit" `electric_spark` fly to the trident over ~10 ticks; the client finds the sources itself from nearby blocks, rate ∝ inflow |
-| Charge level | The trident glows brighter as it charges | Item model property by Q / Qmax (26.1: own numeric property + `range_dispatch`), 4 steps |
+| Charge level | The trident glows brighter as it charges | `ChargeGlowModel` picks the stage by Q / Qmax, 4 steps |
 | Hint | "Charge: 23 / 40" in the tooltip | `ItemTooltipEvent` or the component's `TooltipProvider` |
 | Full charge | A short chime and a burst of sparks | Sound `block.amethyst_block.chime`, particles |
 | Windup | Sparks at the trident in hand while the windup adds charge | Client, by the player flag `windup_sparks` from the server |
@@ -371,10 +370,11 @@ How it is done (stage 8):
   - Vanilla `electric_spark` lives 2–3 ticks, so a "spark in transit" moves every tick and leaves a new particle.
 - **Full charge.** When the synced charge crosses the "full" mark, the client plays the chime and the burst of sparks once. A trident that first comes into view already full doesn't chime.
 - **Item glow.**
-  - `channeling_overhaul:charge` = Q / Qmax, 1 for a full trident. In `assets/minecraft/items/trident.json` one of four textures is laid over the vanilla sprite at the marks 0.25 / 0.5 / 0.75 / 1.0.
+  - Q / Qmax, 1 for a full trident, picks one of four models at the marks 0.25 / 0.5 / 0.75 / 1.0, each with its texture over the vanilla sprite.
+  - `overrides` can't do this: `ItemRenderer.render` swaps in the flat `trident` model for the GUI, the ground and item frames after they were resolved on `trident_in_hand`. So `ChargeGlowModel`, a `BakedModelWrapper` around `minecraft:trident#inventory` (`ModelEvent.ModifyBakingResult`), picks the model in `getRenderPasses`. Its `applyTransform` returns the wrapper itself, otherwise `ItemRenderer` goes on with the wrapped model.
   - The textures are stubs and can be redrawn: `assets/channeling_overhaul/textures/item/trident_charge_1.png` … `_4.png`.
-  - The glow is visible where vanilla draws the flat sprite: inventory, dropped item, item frame, shelf. In hand vanilla draws the 3D model with a special renderer, and the model property doesn't affect it.
-- **Sounds** are registered as own `SoundEvent`s pointing to vanilla ones in `sounds.json`, with en_us and ru_ru subtitles:
+  - The glow is visible where vanilla draws the flat sprite: inventory, dropped item, item frame. In hand vanilla draws the 3D model with a special renderer, and this model takes no part.
+- **Sounds** are registered as own `SoundEvent`s pointing to vanilla ones in `sounds.json`, with en_us, ru_ru and ja_jp subtitles:
   - `trident.full_charge` → `block.amethyst_block.chime`;
   - `discharge.chain` and `discharge.weak` → `entity.lightning_bolt.impact`;
   - `discharge.horn` → `item.trident.thunder`;
@@ -391,7 +391,7 @@ Own `SoundEvent`s are registered right away with vanilla sounds by default, so t
 
 All game math lives in pure Kotlin functions without Minecraft dependencies, and event handlers only gather inputs and apply the result. This way the formulas can be covered by unit tests and the balance tuned without launching the game.
 
-Event and method names below are given for NeoForge 1.21.x. Before implementing they must be checked against the target version: in 26.1 part of the API was renamed.
+Event and method names below are given for NeoForge 21.1.
 
 ### Components
 
@@ -412,7 +412,8 @@ Event and method names below are given for NeoForge 1.21.x. Before implementing 
 | `StationSync` | What the client knows about a stuck trident | Data attachment `station` with `.sync()`, only on a noticeable change (`Visuals.needsSync`) |
 | `ClientStationEffects` | Gathering sparks, full charge chime, windup sparks | `ClientTickEvent.Post`, tridents within 32 blocks, own source cache |
 | `ClientSparks` | Chain arcs and water hits | Packet `SparksPayload` from the server, particles by the client config |
-| `ChargeGlowProperty` | Item glow | Own numeric property `channeling_overhaul:charge` + `range_dispatch` |
+| `ChargeGlowModel` | Item glow | `BakedModelWrapper` around the flat trident model, `getRenderPasses` picks the stage |
+| `ModEnchantment` | Channeling levels in Apothic Enchanting | Own reload listener after Apothic's, replaces the entry in `ApothicEnchanting.ENCHANTMENT_INFO` |
 | `ModConfig` | Numbers from this document (`ChargeParams`) and switches (`DischargeRules`: `chainHitsPlayers`, `sameWaterBody`, `deathMessages`); debug flag `debug.dischargeChat`: Q, M and D of each discharge, base, M and D of each hop and water hit, lightning bonus and windup result in the owner's chat | `ModConfigSpec`, server config |
 | Data | Override of `channeling.json`, data maps, tags, damage types | Data pack built into the mod in `src/main/resources/data` |
 
@@ -424,33 +425,27 @@ Event and method names below are given for NeoForge 1.21.x. Before implementing 
 
 ### Enchantment
 
-Verified against the sources of Apothic Enchanting 2.1.0 (26.1 branch): without configuration Channeling keeps a maximum of **I**. For enchantments with vanilla `max_level: 1` Apothic Enchanting doesn't raise the level automatically (`ApothicEnchanting.computeDefaultMaxLevel` returns 1 right away). So the mod configures two files.
+Verified against the sources of Apothic Enchanting 1.6.4 (1.21 branch): it keeps the numbers of each enchantment in `config/apotheosis/enchantments.cfg`. It reads the file on each data reload (`AddReloadListenerEvent`) into `ApothicEnchanting.ENCHANTMENT_INFO`, clearing the map first, and syncs the map to clients. A mod can't ship that file, and a file made before the mod was installed keeps Channeling at I. So the mod configures two things.
 
-**1. `data/apothic_enchanting/data_maps/enchantment/enchantment_info.json`** — Apothic Enchanting's data map. Data map files from different data packs are merged, so our file with one entry doesn't overwrite Apothic's entries. Fields (`EnchantmentInfo.java`): `max_level` (1–127), `max_loot_level`, `max_anvil_combine_level`, `level_cap`, `min_power`, `max_power`.
+**1. `ModEnchantment`** — a reload listener added at the lowest priority, so it runs after Apothic's. It replaces the entry of Channeling:
 
-```json
-{
-  "values": {
-    "minecraft:channeling": {
-      "max_level": 31,
-      "max_loot_level": 1,
-      "level_cap": 31,
-      "min_power": { "type": "expression", "expression": "IF(x <= 25, 4 * x, 100 + 15 * (x - 25))" }
-    }
-  }
-}
+```kotlin
+EnchantmentInfo(channeling, 31, 1, 31, DefaultMaxPowerFunction.INSTANCE, ExpressionPowerFunction("IF(x <= 25, 4 * x, 100 + 15 * (x - 25))"))
 ```
 
-**2. `data/minecraft/enchantment/channeling.json`** — the vanilla enchantment file. `max_level` is raised to 31; the vanilla effects (lightning in a thunderstorm, lightning rod) are kept. `min_cost` / `max_cost` are set linear with a non-zero `per_level_above_first`, so vanilla calculations don't break (the table's power is set by `min_power` from the data map anyway).
+The arguments are max level, max loot level, level cap, max power and min power. If `Min Power Function` is filled in for `minecraft:channeling` in the file, someone configured it on purpose, and the entry stays as loaded. When a reload is over (`TagsUpdatedEvent`, cause `SERVER_DATA_LOAD`, after every listener) the mod writes one line `Channeling EnchantmentInfo: source=mod|config, …` to the log with the values that really stayed in the map, or a warning if there is no entry.
+
+**2. `data/minecraft/enchantment/channeling.json`** — the vanilla enchantment file. `max_level` is raised to 31; the vanilla effects (lightning in a thunderstorm, lightning rod) are kept. `min_cost` / `max_cost` are set linear with a non-zero `per_level_above_first`, so vanilla calculations don't break (the table's power is set by the min power of `ModEnchantment` anyway).
 
 What's important to know:
 
-- Table: the top slot gets level = Eterna, power = Eterna × a random multiplier from Quanta, at most 200. Level L is available at power ≥ `min_power(L)`. Without an own `min_power` the default formula (25 + 15·(L−1)^1.6) gives at most Channeling V from the table.
+- Table: the top slot gets level = Eterna, power = Eterna × a random multiplier from Quanta, at most 200. Level L is available at power ≥ min power of L. Without an own function the default one (`min_cost` of the level) gives at most Channeling XII from the table.
+- The file's own defaults don't fit: `Max Loot Level` follows the vanilla `max_level`, so loot would go up to 31.
+- With `Min Power Function` filled in, `Max Loot Level` comes from the file too, so it must be set to 1 there: at 31, books from `enchant_randomly` chests and villager trades roll any level up to XXXI. `enchant_with_levels` at 30 (fishing) stays at I: its power is at most 36, and level II needs `min_cost` 40.
 - The chosen formula: up to XXV power = 4·L (the level grows with Eterna), after that 100 + 15·(L−25). Reference points: V — 20, X — 40, XX — 80, XXV — 100, XXX — 175 (maximum Eterna and a lucky Quanta), XXXI — 190 (practically only by anvil: XXX + XXX).
 - The anvil doubles the cost for each level (N + N → N+1), so the main path is the table, and the anvil only for the last 1–3 levels.
 - `IF` is supported (verified at stage 3): Apothic Enchanting evaluates formulas with EvalEx 2.x, repackaged in Apothic Attributes (`dev.shadowsoffire.apothic_attributes.repack.evalex.Expression`). It has `IF(cond, a, b)` and comparison operators.
-- Since 2.1.0 Enchantability gives a chance of +1 level above `max_level`; `level_cap: 31` keeps it from going past XXXI.
-- The vanilla `max_level` = 31 matches the data map: levels II–XXXI have no "above maximum" highlight, level I shows as "Channeling I". `max_level` and `max_loot_level` are still set explicitly in the data map: without them Apothic Enchanting would compute the maximum from the table power (it can exceed 31), and loot would take the vanilla 31.
+- The vanilla `max_level` = 31 matches the entry of `ModEnchantment`: levels II–XXXI have no "above maximum" highlight, level I shows as "Channeling I".
 - The level is read in code through `EnchantmentHelper.getItemEnchantmentLevel(holder, stack)`, the holder comes from the `Registries.ENCHANTMENT` registry by `Enchantments.CHANNELING`.
 
 ### Performance
@@ -477,7 +472,7 @@ com.equi.channelingoverhaul
 ├── charge/                    // StuckTridentCharger, WindupCharger, SourceScanner, LightningListener
 ├── discharge/                 // DischargeHandler, DischargeBolt, ChainScheduler, WaterSpread
 ├── network/SparksPayload.kt    // arcs and water hits for the client
-└── client/                    // ClientStationEffects, ClientSparks, ChargeGlowProperty, DischargeBoltRenderer
+└── client/                    // ClientStationEffects, ClientSparks, ChargeGlowModel, DischargeBoltRenderer
 ```
 
 ## Work plan and open questions
@@ -489,7 +484,7 @@ Work should go in stages so that after each one the mod starts and shows somethi
 - [x] **0. Skeleton.** NeoForge + Kotlin for Forge project, dependency on Apothic Enchanting and Placebo, empty `@Mod object`, the mod starts in the dev environment.
 - [x] **1. Formulas.** `ChargeMath` + `ModConfig` + unit tests for all formulas and tables of this document.
 - [x] **2. Charge in the item.** `ChargeData`, lazy leak, "Charge: X / Y" tooltip, debug command to give charge.
-- [x] **3. Enchantment override.** `channeling.json` with a new `max_level`, Apothic Enchanting data map, checking that the table gives high levels.
+- [x] **3. Enchantment override.** `channeling.json` with a new `max_level`, `ModEnchantment`, checking that the table gives high levels.
 - [x] **4. Charging a stuck trident.** Sky + `SourceScanner` + `conductivity` data map.
 - [x] **5. Discharge.** `DischargeHandler`, damage types, vulnerability M, keeping the charge on a miss.
 - [x] **6. Chain and water.** `ChainScheduler`, `WaterSpread`, exclusions (owner, pets, PvP).
@@ -518,7 +513,7 @@ Not part of stages 0–9, decided after balance.
 
 ### Decided
 
-- **Version:** Minecraft 26.1.2. Apothic Enchanting 2.1.0 for 26.1.2 was released on 6 October 2026 (stable, not beta).
+- **Version:** this branch is the port to Minecraft 1.21.1; development goes on in `master` for 26.1.
 - **Melee** doesn't spend the charge. The charge is spent only when a thrown trident (right click) hits a mob.
 - **Riptide stays incompatible with Channeling.** A Riptide trident isn't thrown and doesn't stick, so the charge mechanic doesn't work with it. A "thunder dash", if needed, is a separate enchantment.
 - **PvP:** with PvP on, the chain hits players by default and doesn't touch team allies; turned off in the config (`chainHitsPlayers`).

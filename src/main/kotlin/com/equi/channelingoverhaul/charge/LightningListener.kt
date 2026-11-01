@@ -65,6 +65,6 @@ object LightningListener {
      */
     private fun intoRod(level: ServerLevel, at: Vec3): Boolean =
         listOf(BlockPos.containing(at.x, at.y - 1.0e-6, at.z), BlockPos.containing(at)).any {
-            level.getBlockState(it).typeHolder().getData(ModDataMaps.CONDUCTIVITY)?.type == ConductorType.LIGHTNING_ROD
+            level.getBlockState(it).blockHolder.getData(ModDataMaps.CONDUCTIVITY)?.type == ConductorType.LIGHTNING_ROD
         }
 }

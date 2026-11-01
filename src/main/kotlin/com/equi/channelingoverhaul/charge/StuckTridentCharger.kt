@@ -10,7 +10,7 @@ import com.equi.channelingoverhaul.mixin.AbstractArrowAccessor
 import com.equi.channelingoverhaul.registry.ModAttachments
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident
+import net.minecraft.world.entity.projectile.ThrownTrident
 import net.minecraft.world.level.Level
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
@@ -21,8 +21,8 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent
 import kotlin.math.roundToLong
 
 /**
- * The trident is stuck in a block (`AbstractArrow.isInGround`, protected in vanilla). A Loyalty
- * trident keeps `isInGround` while it flies back, but that is flight (`isNoPhysics`).
+ * The trident is stuck in a block (`AbstractArrow.inGround`, protected in vanilla). A Loyalty
+ * trident keeps `inGround` while it flies back, but that is flight (`isNoPhysics`).
  */
 val ThrownTrident.isStuck: Boolean
     get() = (this as AbstractArrowAccessor).`channeling_overhaul$isInGround`() && !isNoPhysics
