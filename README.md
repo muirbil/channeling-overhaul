@@ -6,8 +6,6 @@ Channeling stops being "lightning in a thunderstorm" and becomes a charge mechan
 
 > **Unofficial addon for Apothic Enchanting, not affiliated with or endorsed by Shadows_of_Fire.**
 
-Developed with the help of Claude Code (AI coding assistant).
-
 ![Chain discharge through water](docs/media/hero.gif)
 
 *Chain discharge through water*
@@ -164,6 +162,23 @@ Defaults of the server config.
 | XXXI | 196 | 13.1 | 8 | 117.6 | 8.0 |
 
 Formulas: Qmax = 10 + 6·L, R = min(16, 2 + 2·√L), hops = min(8, ⌊L / 3⌋). For reference, a vanilla thrown trident deals 8 damage.
+
+## Advancements
+
+The mod has its own advancement tab. The three challenges give 50 experience each. The thresholds are in the advancement files, so a data pack can change them.
+
+| Advancement | Condition |
+| --- | --- |
+| Storm Tamer | Get a trident with Channeling |
+| Fully Charged | Charge a stuck trident to full from the sky or lightning |
+| Lightning Catcher | Lightning strikes a lightning rod near your stuck trident |
+| Lord of Storms (challenge) | Get a trident with Channeling XXXI |
+| Chain Reaction | One discharge hits 4 mobs: the primary target, the chain and the water together |
+| Bath Time | One discharge kills 5 mobs through water |
+| Eight Links (challenge) | One discharge makes 8 chain hops, from Channeling XXIV |
+| Hundred (challenge) | One discharge deals 100 damage (50 hearts) to one target before armor |
+
+Only the trident's owner gets them, while online. `/channeling` commands give nothing.
 
 ## Commands
 

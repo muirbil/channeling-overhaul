@@ -45,5 +45,22 @@
   "death.attack.channeling_overhaul.discharge_chain": "%1$s became a link in an electric chain",
   "death.attack.channeling_overhaul.discharge_chain.player": "%1$s became the next link in %2$s's chain",
   "death.attack.channeling_overhaul.discharge_water": "%1$s took an electric bath",
-  "death.attack.channeling_overhaul.discharge_water.player": "%1$s took an electric bath courtesy of %2$s"
+  "death.attack.channeling_overhaul.discharge_water.player": "%1$s took an electric bath courtesy of %2$s",
+
+  "advancements.channeling_overhaul.root.title": "Storm Tamer",
+  "advancements.channeling_overhaul.root.description": "Obtain a Trident with Channeling",
+  "advancements.channeling_overhaul.fully_charged.title": "Fully Charged",
+  "advancements.channeling_overhaul.fully_charged.description": "Charge a stuck Trident to the full from the sky or lightning",
+  "advancements.channeling_overhaul.lightning_catcher.title": "Lightning Catcher",
+  "advancements.channeling_overhaul.lightning_catcher.description": "Charge a stuck Trident with lightning that strikes a Lightning Rod",
+  "advancements.channeling_overhaul.lord_of_storms.title": "Lord of Storms",
+  "advancements.channeling_overhaul.lord_of_storms.description": "Obtain a Trident with Channeling XXXI",
+  "advancements.channeling_overhaul.chain_reaction.title": "Chain Reaction",
+  "advancements.channeling_overhaul.chain_reaction.description": "Hit four mobs with a single discharge",
+  "advancements.channeling_overhaul.bath_time.title": "Bath Time",
+  "advancements.channeling_overhaul.bath_time.description": "Kill five mobs through water with a single discharge",
+  "advancements.channeling_overhaul.eight_links.title": "Eight Links",
+  "advancements.channeling_overhaul.eight_links.description": "Make a single discharge jump along the chain eight times",
+  "advancements.channeling_overhaul.hundred.title": "Hundred",
+  "advancements.channeling_overhaul.hundred.description": "Deal 100 damage (50 hearts) to one target with a single discharge, before armor"
 }

@@ -76,6 +76,15 @@ object ModGameTests {
         Test("windup_into_thrown_trident", LightningGameTests::windupIntoThrownTrident, Environment.RAIN, "station", 100, skyAccess = true),
         Test("windup_stops_at_cap", LightningGameTests::windupStopsAtCap, Environment.RAIN, "station", 100, skyAccess = true),
         Test("windup_above_cap", LightningGameTests::windupAboveCap, Environment.RAIN, "station", 100, skyAccess = true),
+        Test("advancements_load", AdvancementGameTests::advancementsLoad),
+        Test("advancement_trident_predicates", AdvancementGameTests::tridentPredicates),
+        Test("advancement_storm_tamer", AdvancementGameTests::stormTamerFromInventory),
+        Test("advancement_fully_charged", AdvancementGameTests::fullyChargedFromSky, Environment.RAIN, "station", 100, skyAccess = true),
+        Test("advancement_lightning_catcher", AdvancementGameTests::lightningCatcher, Environment.CLEAR, structure = "station", maxTicks = 60),
+        Test("advancement_charge_command", AdvancementGameTests::chargeCommandGivesNothing, Environment.RAIN, "station", 100, skyAccess = true),
+        Test("advancement_chain", AdvancementGameTests::dischargeAlongChain, Environment.CLEAR, structure = "station", maxTicks = 80),
+        Test("advancement_bath_time", AdvancementGameTests::dischargeThroughWater, Environment.CLEAR, structure = "station", maxTicks = 60),
+        Test("advancement_damage_command", AdvancementGameTests::damageCommandGivesNothing, Environment.CLEAR, structure = "station"),
     )
 
     private fun id(path: String) = Identifier.fromNamespaceAndPath(ChannelingOverhaul.ID, path)
@@ -86,6 +95,7 @@ object ModGameTests {
         event.register(Registries.TEST_FUNCTION) { helper ->
             for (test in TESTS) helper.register(id(test.name), Consumer<GameTestHelper> { test.function(it) })
         }
+        event.register(Registries.TEST_ENVIRONMENT_DEFINITION_TYPE) { helper -> helper.register(id("instant_weather"), InstantWeather.CODEC) }
     }
 
     @SubscribeEvent
@@ -93,14 +103,8 @@ object ModGameTests {
         if (!GameTestHooks.isGametestEnabled()) return
         val environments: Map<Environment, Holder<TestEnvironmentDefinition<*>>> = mapOf(
             Environment.DEFAULT to event.registerEnvironment(id("default")),
-            Environment.RAIN to event.registerEnvironment(
-                id("rain"),
-                TestEnvironmentDefinition.Weather(TestEnvironmentDefinition.Weather.Type.RAIN),
-            ),
-            Environment.CLEAR to event.registerEnvironment(
-                id("clear"),
-                TestEnvironmentDefinition.Weather(TestEnvironmentDefinition.Weather.Type.CLEAR),
-            ),
+            Environment.RAIN to event.registerEnvironment(id("rain"), InstantWeather(TestEnvironmentDefinition.Weather.Type.RAIN)),
+            Environment.CLEAR to event.registerEnvironment(id("clear"), InstantWeather(TestEnvironmentDefinition.Weather.Type.CLEAR)),
         )
         for (test in TESTS) {
             val data = TestData(

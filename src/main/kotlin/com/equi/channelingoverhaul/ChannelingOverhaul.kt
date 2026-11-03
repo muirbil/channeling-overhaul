@@ -8,6 +8,7 @@ import com.equi.channelingoverhaul.registry.ModAttachments
 import com.equi.channelingoverhaul.registry.ModDataComponents
 import com.equi.channelingoverhaul.registry.ModDataMaps
 import com.equi.channelingoverhaul.registry.ModEntities
+import com.equi.channelingoverhaul.registry.ModTriggers
 import net.neoforged.fml.common.Mod
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -30,6 +31,7 @@ object ChannelingOverhaul {
         ModAttachments.REGISTRY.register(MOD_BUS)
         ModEntities.REGISTRY.register(MOD_BUS)
         ModSounds.REGISTRY.register(MOD_BUS)
+        ModTriggers.REGISTRY.register(MOD_BUS)
         SparksPayload.register()
         ModDataMaps.register()
         LOGGER.info("Channeling Overhaul loaded")

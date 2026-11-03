@@ -35,7 +35,7 @@ class VisualDataTest {
     }
 
     @Test
-    fun `every sound points at a vanilla event and has a subtitle in both languages`() {
+    fun `every sound points at a vanilla event and has a subtitle in all languages`() {
         val sounds = json("channeling_overhaul/sounds.json")
         assertEquals(
             setOf("trident.full_charge", "discharge.chain", "discharge.weak", "discharge.horn", "discharge.distant_thunder"),
@@ -43,10 +43,11 @@ class VisualDataTest {
         )
         val en = json("channeling_overhaul/lang/en_us.json")
         val ru = json("channeling_overhaul/lang/ru_ru.json")
+        val ja = json("channeling_overhaul/lang/ja_jp.json")
         for ((name, value) in sounds.entrySet()) {
             val sound = value.asJsonObject
             val subtitle = sound.get("subtitle").asString
-            assertTrue(en.has(subtitle) && ru.has(subtitle), "$name: no subtitle $subtitle")
+            assertTrue(en.has(subtitle) && ru.has(subtitle) && ja.has(subtitle), "$name: no subtitle $subtitle")
             val event = sound.getAsJsonArray("sounds")[0].asJsonObject
             assertEquals("event", event.get("type").asString, name)
             assertTrue(event.get("name").asString.startsWith("minecraft:"), name)

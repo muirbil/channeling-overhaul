@@ -2,7 +2,16 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses [Semantic Versioning](https://semver.org/).
 
-## [0.1.0-beta] — 2026-10-29
+## [0.2.0-beta] — 2026-11-03
+
+### Added
+
+- **Advancements.** An own tab with a copper background and eight advancements: three for charging, four for discharges and a challenge for Channeling XXXI. The three challenges give 50 experience.
+  - Only the player who threw the trident gets them, and only while online. The `/channeling` debug commands don't count.
+  - For data pack authors: two new triggers, `channeling_overhaul:charge` and `channeling_overhaul:discharge`. The thresholds (4 targets, 5 kills, 8 hops, 100 damage) are set in the advancement files and can be changed.
+- **Japanese translation** (`ja_jp`), the same as in the 1.21.1 build. Vanilla terms follow the Japanese translation of Minecraft 26.1.2.
+
+## [0.1.0-beta] — 2026-10-30
 
 First public release, for Minecraft 26.1.2, NeoForge 26.1.2.64-beta+, Kotlin for Forge 6.4+ and Apothic Enchanting 2.1.0+.
 
@@ -36,7 +45,7 @@ First public release, for Minecraft 26.1.2, NeoForge 26.1.2.64-beta+, Kotlin for
 ### Known limitations
 
 - Balance numbers are starting values and have not been playtested. Tuning waits for player feedback.
-- The glow shows only on the flat trident sprite, not on the 3D model in hand.
 - Apotheosis integration is not tested yet.
 
+[0.2.0-beta]: ../../compare/v0.1.0-beta...v0.2.0-beta
 [0.1.0-beta]: ../../releases/tag/v0.1.0-beta

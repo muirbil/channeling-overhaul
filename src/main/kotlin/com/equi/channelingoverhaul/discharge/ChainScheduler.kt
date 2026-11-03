@@ -1,6 +1,9 @@
 package com.equi.channelingoverhaul.discharge
 
 import com.equi.channelingoverhaul.ChannelingOverhaul
+import com.equi.channelingoverhaul.advancement.DischargeStats
+import com.equi.channelingoverhaul.advancement.HitKind
+import com.equi.channelingoverhaul.advancement.TridentAdvancements
 import com.equi.channelingoverhaul.config.ModConfig
 import com.equi.channelingoverhaul.core.ChainCandidate
 import com.equi.channelingoverhaul.core.ChargeMath
@@ -30,6 +33,8 @@ class ChainRun(
     /** Where the last link was when last seen, the chain goes on from here if it is gone */
     var lastPos: Vec3,
     var nextTick: Int,
+    /** What the whole discharge has done so far, for its advancements once the chain is over */
+    val stats: DischargeStats,
 ) {
     var done = 0
 }
@@ -43,10 +48,14 @@ class ChainRun(
 object ChainScheduler {
     private val runs = ArrayList<ChainRun>()
 
-    fun start(level: ServerLevel, origin: DischargeOrigin, charge: Double, channeling: Int, primary: LivingEntity, hit: MutableSet<Int>, p: ChargeParams) {
+    /** Starts the chain of a discharge, or ends the discharge right away when it has no hops. */
+    fun start(
+        level: ServerLevel, origin: DischargeOrigin, charge: Double, channeling: Int, primary: LivingEntity,
+        hit: MutableSet<Int>, stats: DischargeStats, p: ChargeParams,
+    ) {
         val hops = ChargeMath.chainJumps(channeling, p)
-        if (hops <= 0) return
-        runs += ChainRun(origin, charge, hops, hit, primary.id, primary.boundingBox.center, level.server.tickCount + p.chainHopDelayTicks)
+        if (hops <= 0) return TridentAdvancements.discharged(level, origin, stats)
+        runs += ChainRun(origin, charge, hops, hit, primary.id, primary.boundingBox.center, level.server.tickCount + p.chainHopDelayTicks, stats)
     }
 
     @SubscribeEvent
@@ -55,7 +64,12 @@ object ChainScheduler {
         val now = event.server.tickCount
         for (run in runs.toList()) {
             if (now < run.nextTick) continue
-            if (hop(event.server, run)) run.nextTick = now + ModConfig.params.chainHopDelayTicks else runs.remove(run)
+            if (hop(event.server, run)) {
+                run.nextTick = now + ModConfig.params.chainHopDelayTicks
+            } else {
+                runs.remove(run)
+                event.server.getLevel(run.origin.dimension)?.let { TridentAdvancements.discharged(it, run.origin, run.stats) }
+            }
         }
     }
 
@@ -87,7 +101,9 @@ object ChainScheduler {
         val damage = base * m[index]
         val to = target.boundingBox.center
         run.hit += target.id
+        val alive = target.isAlive
         target.hurtServer(level, source, damage.toFloat())
+        run.stats.hit(HitKind.CHAIN, damage, alive && target.isDeadOrDying)
         DischargeEffects.arc(level, from, to)
         DischargeEffects.crackle(level, target, p)
         DischargeEffects.debug(level, run.origin, "chat.channeling_overhaul.chain.debug", hop, target.displayName, base, m[index], damage)

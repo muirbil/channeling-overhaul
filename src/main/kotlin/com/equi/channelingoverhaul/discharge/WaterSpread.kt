@@ -1,5 +1,7 @@
 package com.equi.channelingoverhaul.discharge
 
+import com.equi.channelingoverhaul.advancement.DischargeStats
+import com.equi.channelingoverhaul.advancement.HitKind
 import com.equi.channelingoverhaul.config.DischargeRules
 import com.equi.channelingoverhaul.core.ChargeMath
 import com.equi.channelingoverhaul.core.ChargeParams
@@ -20,7 +22,7 @@ import net.minecraft.world.phys.AABB
 object WaterSpread {
     fun spread(
         level: ServerLevel, primary: LivingEntity, charge: Double, channeling: Int,
-        origin: DischargeOrigin, hit: MutableSet<Int>, p: ChargeParams, rules: DischargeRules,
+        origin: DischargeOrigin, hit: MutableSet<Int>, stats: DischargeStats, p: ChargeParams, rules: DischargeRules,
     ) {
         if (!primary.isInWater) return
         val radius = ChargeMath.spreadRadius(channeling, p)
@@ -35,7 +37,9 @@ object WaterSpread {
             val base = ChargeMath.spreadBase(charge, distance, radius, p)
             val m = DischargeTargets.vulnerability(target, p)
             hit += target.id
+            val alive = target.isAlive
             target.hurtServer(level, source, (base * m).toFloat())
+            stats.hit(HitKind.WATER, base * m, alive && target.isDeadOrDying)
             DischargeEffects.waterHit(level, target)
             DischargeEffects.debug(level, origin, "chat.channeling_overhaul.water.debug", target.displayName, distance, base, m, base * m)
         }

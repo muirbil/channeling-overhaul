@@ -45,5 +45,22 @@
   "death.attack.channeling_overhaul.discharge_chain": "%1$s оказался звеном электрической цепи",
   "death.attack.channeling_overhaul.discharge_chain.player": "%1$s оказался следующим звеном в цепи %2$s",
   "death.attack.channeling_overhaul.discharge_water": "%1$s принял электрическую ванну",
-  "death.attack.channeling_overhaul.discharge_water.player": "%1$s принял электрическую ванну от %2$s"
+  "death.attack.channeling_overhaul.discharge_water.player": "%1$s принял электрическую ванну от %2$s",
+
+  "advancements.channeling_overhaul.root.title": "Укротитель молний",
+  "advancements.channeling_overhaul.root.description": "Получите трезубец с чарами «Громовержец»",
+  "advancements.channeling_overhaul.fully_charged.title": "Под напряжением",
+  "advancements.channeling_overhaul.fully_charged.description": "Полностью зарядите воткнутый трезубец от неба или молнии",
+  "advancements.channeling_overhaul.lightning_catcher.title": "Ловец молний",
+  "advancements.channeling_overhaul.lightning_catcher.description": "Зарядите воткнутый трезубец молнией, ударившей в громоотвод",
+  "advancements.channeling_overhaul.lord_of_storms.title": "Повелитель бурь",
+  "advancements.channeling_overhaul.lord_of_storms.description": "Получите трезубец с чарами «Громовержец XXXI»",
+  "advancements.channeling_overhaul.chain_reaction.title": "Цепная реакция",
+  "advancements.channeling_overhaul.chain_reaction.description": "Заденьте одним разрядом четырёх мобов",
+  "advancements.channeling_overhaul.bath_time.title": "Электрическая ванна",
+  "advancements.channeling_overhaul.bath_time.description": "Убейте одним разрядом через воду пятерых мобов",
+  "advancements.channeling_overhaul.eight_links.title": "Восемь звеньев",
+  "advancements.channeling_overhaul.eight_links.description": "Заставьте один разряд восемь раз перескочить по цепи",
+  "advancements.channeling_overhaul.hundred.title": "Сотня",
+  "advancements.channeling_overhaul.hundred.description": "Нанесите одной цели 100 урона (50 сердец) одним разрядом, до учёта брони"
 }

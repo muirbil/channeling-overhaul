@@ -1,5 +1,7 @@
 package com.equi.channelingoverhaul.discharge
 
+import com.equi.channelingoverhaul.advancement.DischargeStats
+import com.equi.channelingoverhaul.advancement.HitKind
 import com.equi.channelingoverhaul.config.ModConfig
 import com.equi.channelingoverhaul.core.ChargeMath
 import com.equi.channelingoverhaul.core.ChargeParams
@@ -42,7 +44,10 @@ object DischargeHandler {
             it.tickCount == 0
         }.isNotEmpty()
         val origin = DischargeOrigin.of(level, trident)
+        val stats = DischargeStats()
+        val alive = target.isAlive
         target.hurtServer(level, source(level, trident, discharge, stack), discharge.damage.toFloat())
+        stats.hit(HitKind.PRIMARY, discharge.damage, alive && target.isDeadOrDying)
         effects(level, target, discharge, vanillaLightning, p)
         if (ModConfig.rules.distantThunder && discharge.overcharged && channeling >= p.distantThunderMinLevel) {
             // Volume 10000 carries the sound 160 000 blocks: the whole dimension, like a real thunderbolt
@@ -58,8 +63,8 @@ object DischargeHandler {
 
         // One "already hit" for the whole discharge: nobody takes a second hit from the water or the chain
         val hit = mutableSetOf(target.id)
-        WaterSpread.spread(level, target, discharge.charge, channeling, origin, hit, p, ModConfig.rules)
-        ChainScheduler.start(level, origin, discharge.charge, channeling, target, hit, p)
+        WaterSpread.spread(level, target, discharge.charge, channeling, origin, hit, stats, p, ModConfig.rules)
+        ChainScheduler.start(level, origin, discharge.charge, channeling, target, hit, stats, p)
     }
 
     fun source(level: ServerLevel, trident: ThrownTrident, discharge: Discharge, stack: ItemStack) = DischargeDamageSource(

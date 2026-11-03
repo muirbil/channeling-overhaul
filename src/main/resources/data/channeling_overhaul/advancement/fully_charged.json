@@ -1,0 +1,26 @@
+{
+  "parent": "channeling_overhaul:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:copper_bulb"
+    },
+    "title": {
+      "translate": "advancements.channeling_overhaul.fully_charged.title"
+    },
+    "description": {
+      "translate": "advancements.channeling_overhaul.fully_charged.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "fully_charged": {
+      "trigger": "channeling_overhaul:charge",
+      "conditions": {
+        "full": true
+      }
+    }
+  }
+}

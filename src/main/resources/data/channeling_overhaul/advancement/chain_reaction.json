@@ -1,0 +1,28 @@
+{
+  "parent": "channeling_overhaul:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_chain"
+    },
+    "title": {
+      "translate": "advancements.channeling_overhaul.chain_reaction.title"
+    },
+    "description": {
+      "translate": "advancements.channeling_overhaul.chain_reaction.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "chain_reaction": {
+      "trigger": "channeling_overhaul:discharge",
+      "conditions": {
+        "targets_hit": {
+          "min": 4
+        }
+      }
+    }
+  }
+}

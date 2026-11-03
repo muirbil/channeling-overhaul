@@ -1,0 +1,31 @@
+{
+  "parent": "channeling_overhaul:chain_reaction",
+  "display": {
+    "icon": {
+      "id": "minecraft:copper_chain"
+    },
+    "title": {
+      "translate": "advancements.channeling_overhaul.eight_links.title"
+    },
+    "description": {
+      "translate": "advancements.channeling_overhaul.eight_links.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "eight_links": {
+      "trigger": "channeling_overhaul:discharge",
+      "conditions": {
+        "hops": {
+          "min": 8
+        }
+      }
+    }
+  },
+  "rewards": {
+    "experience": 50
+  }
+}
