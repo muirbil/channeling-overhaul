@@ -74,6 +74,17 @@ object ModGameTests {
         Test("windup_into_thrown_trident", LightningGameTests::windupIntoThrownTrident, Environment.RAIN, "station", 100, skyAccess = true),
         Test("windup_stops_at_cap", LightningGameTests::windupStopsAtCap, Environment.RAIN, "station", 100, skyAccess = true),
         Test("windup_above_cap", LightningGameTests::windupAboveCap, Environment.RAIN, "station", 100, skyAccess = true),
+        Test("rain_from_first_tick", ::rainFromFirstTick, Environment.RAIN),
+        Test("clear_from_first_tick", ::clearFromFirstTick, Environment.CLEAR),
+        Test("advancements_load", AdvancementGameTests::advancementsLoad),
+        Test("advancement_trident_predicates", AdvancementGameTests::tridentPredicates),
+        Test("advancement_storm_tamer", AdvancementGameTests::stormTamerFromInventory),
+        Test("advancement_fully_charged", AdvancementGameTests::fullyChargedFromSky, Environment.RAIN, "station", 100, skyAccess = true),
+        Test("advancement_lightning_catcher", AdvancementGameTests::lightningCatcher, Environment.CLEAR, structure = "station", maxTicks = 60),
+        Test("advancement_charge_command", AdvancementGameTests::chargeCommandGivesNothing, Environment.RAIN, "station", 100, skyAccess = true),
+        Test("advancement_chain", AdvancementGameTests::dischargeAlongChain, Environment.CLEAR, structure = "station", maxTicks = 80),
+        Test("advancement_bath_time", AdvancementGameTests::dischargeThroughWater, Environment.CLEAR, structure = "station", maxTicks = 60),
+        Test("advancement_damage_command", AdvancementGameTests::damageCommandGivesNothing, Environment.CLEAR, structure = "station"),
     )
 
     /** Each environment is a batch of its own; `GameTestRegistry` needs a static method on an `object`. */
@@ -86,12 +97,16 @@ object ModGameTests {
         )
     }
 
-    /** The rain level rises slowly on its own, and `isRaining` waits for it. */
+    /**
+     * The weather flags alone move the rain and thunder levels by 0.01 a tick, and `isRaining` waits for rain level 0.2:
+     * a clear batch right after a rainy one would still rain for some 80 ticks. So the levels are set at once too.
+     */
     @JvmStatic
     @BeforeBatch(batch = RAIN_BATCH)
     fun rain(level: ServerLevel) {
         level.setWeatherParameters(0, WEATHER_TICKS, true, false)
         level.setRainLevel(1.0f)
+        level.setThunderLevel(0.0f)
     }
 
     @JvmStatic
@@ -99,6 +114,18 @@ object ModGameTests {
     fun clear(level: ServerLevel) {
         level.setWeatherParameters(WEATHER_TICKS, 0, false, false)
         level.setRainLevel(0.0f)
+        level.setThunderLevel(0.0f)
+    }
+
+    /** Batches run in no fixed order, so these two also catch weather left over from the batch before. */
+    private fun rainFromFirstTick(helper: GameTestHelper) {
+        helper.assertTrue(helper.level.isRaining && !helper.level.isThundering, "no rain at tick ${helper.tick}")
+        helper.succeed()
+    }
+
+    private fun clearFromFirstTick(helper: GameTestHelper) {
+        helper.assertTrue(!helper.level.isRaining && !helper.level.isThundering, "rain at tick ${helper.tick}")
+        helper.succeed()
     }
 
     @SubscribeEvent

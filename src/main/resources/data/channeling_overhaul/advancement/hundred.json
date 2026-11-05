@@ -1,0 +1,31 @@
+{
+  "parent": "channeling_overhaul:eight_links",
+  "display": {
+    "icon": {
+      "id": "minecraft:end_crystal"
+    },
+    "title": {
+      "translate": "advancements.channeling_overhaul.hundred.title"
+    },
+    "description": {
+      "translate": "advancements.channeling_overhaul.hundred.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "hundred": {
+      "trigger": "channeling_overhaul:discharge",
+      "conditions": {
+        "max_damage": {
+          "min": 100.0
+        }
+      }
+    }
+  },
+  "rewards": {
+    "experience": 50
+  }
+}

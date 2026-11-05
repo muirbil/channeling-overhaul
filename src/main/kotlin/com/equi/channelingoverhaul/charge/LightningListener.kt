@@ -1,6 +1,8 @@
 package com.equi.channelingoverhaul.charge
 
 import com.equi.channelingoverhaul.ChannelingOverhaul
+import com.equi.channelingoverhaul.advancement.ChargeSource
+import com.equi.channelingoverhaul.advancement.TridentAdvancements
 import com.equi.channelingoverhaul.config.ModConfig
 import com.equi.channelingoverhaul.core.ChargeMath
 import com.equi.channelingoverhaul.core.ChargeParams
@@ -50,6 +52,8 @@ object LightningListener {
             val after = ChargeMath.strike(before, qMax, intoRod, p)
             TridentCharge.write(stack, after, now)
             StationSync.updateCharge(trident, after)
+            // Even into a full trident: the bolt reached it
+            TridentAdvancements.charged(trident, before, after, qMax, if (intoRod) ChargeSource.LIGHTNING_ROD else ChargeSource.LIGHTNING)
             DischargeEffects.burst(level, trident)
             DischargeEffects.debug(
                 trident.owner as? ServerPlayer,

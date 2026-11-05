@@ -45,5 +45,22 @@
   "death.attack.channeling_overhaul.discharge_chain": "%1$sは電気の連鎖に巻き込まれた",
   "death.attack.channeling_overhaul.discharge_chain.player": "%1$sは次の標的として%2$sの連鎖に巻き込まれた",
   "death.attack.channeling_overhaul.discharge_water": "%1$sは電気風呂に入った",
-  "death.attack.channeling_overhaul.discharge_water.player": "%1$sは%2$sの用意した電気風呂に入った"
+  "death.attack.channeling_overhaul.discharge_water.player": "%1$sは%2$sの用意した電気風呂に入った",
+
+  "advancements.channeling_overhaul.root.title": "雷を手なずける者",
+  "advancements.channeling_overhaul.root.description": "召雷が付与されたトライデントを手に入れる",
+  "advancements.channeling_overhaul.fully_charged.title": "フルチャージ",
+  "advancements.channeling_overhaul.fully_charged.description": "突き刺したトライデントを最大までチャージする",
+  "advancements.channeling_overhaul.lightning_catcher.title": "雷を捉える者",
+  "advancements.channeling_overhaul.lightning_catcher.description": "避雷針に落ちた雷で、突き刺さったトライデントをチャージする",
+  "advancements.channeling_overhaul.lord_of_storms.title": "嵐の支配者",
+  "advancements.channeling_overhaul.lord_of_storms.description": "召雷 XXXIが付与されたトライデントを手に入れる",
+  "advancements.channeling_overhaul.chain_reaction.title": "連鎖反応",
+  "advancements.channeling_overhaul.chain_reaction.description": "1回の放電で4体のMobにダメージを与える",
+  "advancements.channeling_overhaul.bath_time.title": "電気風呂",
+  "advancements.channeling_overhaul.bath_time.description": "1回の放電で、水を通して5体のMobを倒す",
+  "advancements.channeling_overhaul.eight_links.title": "8連鎖",
+  "advancements.channeling_overhaul.eight_links.description": "1回の放電を8回連鎖させる",
+  "advancements.channeling_overhaul.hundred.title": "一撃百",
+  "advancements.channeling_overhaul.hundred.description": "1回の放電で1体に100（ハート50個分）のダメージを与える（防具による軽減前）"
 }

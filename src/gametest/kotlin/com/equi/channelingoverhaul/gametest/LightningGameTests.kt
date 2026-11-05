@@ -162,7 +162,7 @@ object LightningGameTests {
         StationGameTests.stoneFloor(helper)
         StationGameTests.fillBiome(helper, Biomes.PLAINS)
         var started = false
-        // The rain of the environment fades in: isRaining needs rain level 0.2, some 20 ticks after the batch starts
+        // The rain batch sets the rain level at once; the check only guards against a change of the batch
         helper.onEachTick {
             val level = helper.level
             if (started || !level.isRaining) return@onEachTick

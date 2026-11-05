@@ -1,6 +1,8 @@
 package com.equi.channelingoverhaul.charge
 
 import com.equi.channelingoverhaul.ChannelingOverhaul
+import com.equi.channelingoverhaul.advancement.ChargeSource
+import com.equi.channelingoverhaul.advancement.TridentAdvancements
 import com.equi.channelingoverhaul.config.ModConfig
 import com.equi.channelingoverhaul.core.ChargeMath
 import com.equi.channelingoverhaul.core.ChargeParams
@@ -106,8 +108,10 @@ object StuckTridentCharger {
         val reading = StationReading.of(trident, channeling, state.scan, p)
         val seconds = ChargeMath.ticksToSeconds(now - state.lastStep)
         val qMax = ChargeMath.capacity(channeling, p)
-        val charge = ChargeMath.charge(TridentCharge.stored(stack), reading.inflow, seconds, qMax)
+        val before = TridentCharge.stored(stack)
+        val charge = ChargeMath.charge(before, reading.inflow, seconds, qMax)
         TridentCharge.write(stack, charge, now)
+        if (charge > before) TridentAdvancements.charged(trident, before, charge, qMax, ChargeSource.SKY)
         StationSync.update(trident, StationSync.view(reading, charge, qMax))
         state.lastStep = now
     }

@@ -387,6 +387,98 @@ Config option `distantThunder` (off by default): a full discharge at level XX an
 
 Own `SoundEvent`s are registered right away with vanilla sounds by default, so they can later be replaced by a resource pack without code changes.
 
+## Advancements
+
+The mod has its own advancement tab. Its background is the copper block texture.
+
+**The tree.** All ids are in the `channeling_overhaul` namespace.
+
+| Advancement | Id | Frame | Parent | Condition | Icon |
+| --- | --- | --- | --- | --- | --- |
+| Storm Tamer | `root` | task | — | The player gets a trident with Channeling of any level | `minecraft:trident` |
+| Fully Charged | `fully_charged` | task | `root` | The player's stuck trident reaches the "full" mark by real charging: from the sky with the antenna or from lightning | `minecraft:copper_bulb` |
+| Lightning Catcher | `lightning_catcher` | goal | `fully_charged` | The player's stuck trident gets the bonus of a lightning bolt that struck a lightning rod | `minecraft:lightning_rod` |
+| Lord of Storms | `lord_of_storms` | challenge | `lightning_catcher` | The player has a trident with Channeling XXXI | `minecraft:trident` with the enchantment glint |
+| Chain Reaction | `chain_reaction` | task | `root` | One discharge hits 4 or more different living entities in total: the primary target, the chain and the water | `minecraft:chain` |
+| Bath Time | `bath_time` | goal | `chain_reaction` | One discharge kills 5 or more with `discharge_water` damage | `minecraft:water_bucket` |
+| Eight Links | `eight_links` | challenge | `chain_reaction` | One discharge makes 8 chain hops | `minecraft:chain` with the enchantment glint |
+| Hundred | `hundred` | challenge | `eight_links` | One discharge has a computed D of 100 or more on a single target, before armor and crits | `minecraft:end_crystal` |
+
+**Rules:**
+
+- Challenges give 50 experience; the others give no reward.
+- Every advancement shows a toast and is announced in chat. None is hidden.
+- Only the trident's owner gets the advancement, and only while they are online. The mod doesn't keep the advancement for later if the owner is offline. A trident thrown by a mob (a drowned) gives nothing.
+- The thresholds (4, 5, 8, 100) are set in the advancement JSON, not in code, so modpacks can change them with a data pack.
+- Reaching the thresholds, with the default config:
+  - Eight Links needs N(L) = 8, that is Channeling XXIV or higher.
+  - Hundred needs 0.6·Q·M ≥ 100. That takes Channeling XXVII at M = 1, or Channeling XIII on a target with M = 2.
+
+**What doesn't count:**
+
+- Debug commands fire no trigger:
+  - `/channeling charge` writes the charge directly;
+  - `/channeling station` only reads.
+- A trident filled by command is already above the "full" mark, so later charging doesn't cross it and doesn't give Fully Charged either.
+- The vanilla `/damage` command with the mod's damage types isn't a discharge and doesn't count.
+- A bolt from `/summon lightning_bolt` is a real `LightningBolt` and charges like a natural one, as it does for the vanilla lightning advancements.
+- Windup doesn't fire the charge trigger: its cap is 30% Qmax, so it never fills the trident.
+
+### Triggers
+
+Two own triggers (`SimpleCriterionTrigger` with a codec). Each also takes the vanilla `player` field (an entity predicate).
+
+**`channeling_overhaul:charge`** fires on each charge increase of the player's stuck trident:
+
+- every charging step from the sky (once every 10 ticks);
+- each lightning strike within radius R.
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `full` | boolean | This increase crossed the "full" mark: before it the charge was below 99.5% Qmax, after it at least 99.5% Qmax. It's the same threshold as the full charge chime in `StationSync`. |
+| `source` | `sky`, `lightning` or `lightning_rod` | `sky`: charging from the sky with the antenna. `lightning`: a bolt anywhere else. `lightning_rod`: a bolt into a lightning rod (the rule of the "Lightning strike" section). |
+
+The lightning sources fire even if the trident was already full and the bolt added nothing: the bolt still reached the trident.
+
+Fully Charged uses `{"full": true}`, Lightning Catcher uses `{"source": "lightning_rod"}`.
+
+**`channeling_overhaul:discharge`** fires once per discharge, when it is over: after the last chain hop, or right after the water hit when there is no chain. All fields are `MinMaxBounds`.
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `targets_hit` | int | Different living entities the discharge hit: the primary target, the water and the chain |
+| `kills` | int | Of them, those the discharge killed: alive before its hit and dead after it |
+| `water_kills` | int | Kills by `discharge_water` damage |
+| `hops` | int | Chain hops made |
+| `max_damage` | double | The largest computed D on one target, before armor and crits. For the primary target it's 0.6·Q·M, for a hop or a water hit its base times its own M. |
+
+The thresholds in the JSON:
+
+- Chain Reaction: `targets_hit` ≥ 4;
+- Bath Time: `water_kills` ≥ 5;
+- Eight Links: `hops` ≥ 8;
+- Hundred: `max_damage` ≥ 100.
+
+The owner is looked up when the discharge is over. If they log out during the chain, nobody gets the advancement.
+
+### Data-only advancements
+
+Storm Tamer and Lord of Storms need no code. They use the vanilla trigger `minecraft:inventory_changed` with an item predicate for `minecraft:trident`. The predicate has the sub-predicate `minecraft:enchantments` for `minecraft:channeling`; Lord of Storms adds `"levels": {"min": 31}`.
+
+NeoForge checks this sub-predicate through `getAllEnchantments`. So level bonuses from other mods (Apotheosis affixes) count, the same as in `TridentCharge.level`.
+
+### Implementation
+
+- `ModTriggers`: a `DeferredRegister` on `Registries.TRIGGER_TYPE` with `ChargeTrigger` and `DischargeTrigger`.
+- The match conditions without `player` are separate codecs, `ChargeConditions` and `DischargeConditions`. Unit tests decode them from the advancement files and check the matching without starting the game.
+- Where the triggers fire:
+  - `charge`: `StuckTridentCharger` (source `sky`) and `LightningListener`.
+  - `discharge`: the results are gathered in `DischargeStats`, one object for the whole discharge. `DischargeHandler`, `WaterSpread` and `ChainScheduler` fill it; the chain task holds it until the last hop.
+- Advancement files: `data/channeling_overhaul/advancement/<id>.json`.
+- Translation keys: `advancements.channeling_overhaul.<id>.title` and `.description`, in en_us, ru_ru and ja_jp.
+- The background in 1.21.1 is the full path of the texture: `"background": "minecraft:textures/block/copper_block.png"`. In 26.1 it is a texture id without `textures/` and `.png`.
+- 1.21.1 has no copper chain, so Eight Links shows the chain of Chain Reaction with the enchantment glint, the same way Lord of Storms shows the trident of Storm Tamer.
+
 ## Technical implementation
 
 All game math lives in pure Kotlin functions without Minecraft dependencies, and event handlers only gather inputs and apply the result. This way the formulas can be covered by unit tests and the balance tuned without launching the game.
@@ -412,10 +504,11 @@ Event and method names below are given for NeoForge 21.1.
 | `StationSync` | What the client knows about a stuck trident | Data attachment `station` with `.sync()`, only on a noticeable change (`Visuals.needsSync`) |
 | `ClientStationEffects` | Gathering sparks, full charge chime, windup sparks | `ClientTickEvent.Post`, tridents within 32 blocks, own source cache |
 | `ClientSparks` | Chain arcs and water hits | Packet `SparksPayload` from the server, particles by the client config |
+| `ChargeTrigger`, `DischargeTrigger` | Advancement triggers `charge` and `discharge` (section "Advancements") | `SimpleCriterionTrigger` with a codec, `ModTriggers` on `Registries.TRIGGER_TYPE`; the results of a discharge are gathered in `DischargeStats` |
 | `ChargeGlowModel` | Item glow | `BakedModelWrapper` around the flat trident model, `getRenderPasses` picks the stage |
 | `ModEnchantment` | Channeling levels in Apothic Enchanting | Own reload listener after Apothic's, replaces the entry in `ApothicEnchanting.ENCHANTMENT_INFO` |
 | `ModConfig` | Numbers from this document (`ChargeParams`) and switches (`DischargeRules`: `chainHitsPlayers`, `sameWaterBody`, `deathMessages`); debug flag `debug.dischargeChat`: Q, M and D of each discharge, base, M and D of each hop and water hit, lightning bonus and windup result in the owner's chat | `ModConfigSpec`, server config |
-| Data | Override of `channeling.json`, data maps, tags, damage types | Data pack built into the mod in `src/main/resources/data` |
+| Data | Override of `channeling.json`, data maps, tags, damage types, advancements | Data pack built into the mod in `src/main/resources/data` |
 
 ### Charge storage
 
@@ -471,6 +564,7 @@ com.equi.channelingoverhaul
 ├── registry/                  // components, sounds, damage types, data maps
 ├── charge/                    // StuckTridentCharger, WindupCharger, SourceScanner, LightningListener
 ├── discharge/                 // DischargeHandler, DischargeBolt, ChainScheduler, WaterSpread
+├── advancement/               // ChargeTrigger, DischargeTrigger, DischargeStats
 ├── network/SparksPayload.kt    // arcs and water hits for the client
 └── client/                    // ClientStationEffects, ClientSparks, ChargeGlowModel, DischargeBoltRenderer
 ```
@@ -491,6 +585,7 @@ Work should go in stages so that after each one the mod starts and shows somethi
 - [x] **7. Lightning and windup.** `LightningListener`, `WindupCharger`.
 - [x] **8. Visuals and sound.** Gathering particles, arcs, glow, sounds.
 - [ ] **9. Balance.** *Deferred until player feedback.* Playtest at levels I, V, X, XX, XXXI, tuning the numbers in the config. Release 0.1.0-beta ships with the starting numbers of this document.
+- [x] **10. Advancements.** Own tab, triggers `charge` and `discharge`, eight advancements (section "Advancements").
 
 ### Future improvements
 

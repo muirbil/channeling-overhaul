@@ -1,0 +1,46 @@
+{
+  "parent": "channeling_overhaul:lightning_catcher",
+  "display": {
+    "icon": {
+      "id": "minecraft:trident",
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      }
+    },
+    "title": {
+      "translate": "advancements.channeling_overhaul.lord_of_storms.title"
+    },
+    "description": {
+      "translate": "advancements.channeling_overhaul.lord_of_storms.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "lord_of_storms": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:trident",
+            "predicates": {
+              "minecraft:enchantments": [
+                {
+                  "enchantments": "minecraft:channeling",
+                  "levels": {
+                    "min": 31
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 50
+  }
+}

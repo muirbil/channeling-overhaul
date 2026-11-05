@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses [Semantic Versioning](https://semver.org/).
 
+## [0.2.0-beta] — 2026-11-06
+
+### Added
+
+- **Advancements.** An own tab with a copper background and eight advancements: three for charging, four for discharges and a challenge for Channeling XXXI. The three challenges give 50 experience.
+  - Only the player who threw the trident gets them, and only while online. The `/channeling` debug commands don't count.
+  - For data pack authors: two new triggers, `channeling_overhaul:charge` and `channeling_overhaul:discharge`. The thresholds (4 targets, 5 kills, 8 hops, 100 damage) are set in the advancement files and can be changed.
+- **Japanese translation** of the advancements. The rest of `ja_jp` came in 0.1.0-beta of this build; vanilla terms follow the Japanese translation of Minecraft 1.21.1.
+
+### Changed
+
+- New mod icon.
+
+### Differences from the 26.1 build
+
+- The iron chain is `minecraft:chain` in 1.21.1, and there is no copper chain: Eight Links shows the chain of Chain Reaction with the enchantment glint.
+
 ## [0.1.0-beta] — 2026-11-01
 
 First public release of the 1.21.1 build, for Minecraft 1.21.1, NeoForge 21.1.235+, Kotlin for Forge 5.12+ and Apothic Enchanting 1.6.4+. It has the mechanics and numbers of the 0.1.0-beta for Minecraft 26.1.
@@ -46,4 +63,5 @@ First public release of the 1.21.1 build, for Minecraft 1.21.1, NeoForge 21.1.23
 - The glow shows only on the flat trident sprite, not on the 3D model in hand.
 - Apotheosis integration is not tested yet.
 
+[0.2.0-beta]: ../../compare/v0.1.0-beta-1.21.1...v0.2.0-beta-1.21.1
 [0.1.0-beta]: ../../releases/tag/v0.1.0-beta-1.21.1

@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "id": "minecraft:trident"
+    },
+    "title": {
+      "translate": "advancements.channeling_overhaul.root.title"
+    },
+    "description": {
+      "translate": "advancements.channeling_overhaul.root.description"
+    },
+    "background": "minecraft:textures/block/copper_block.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "root": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:trident",
+            "predicates": {
+              "minecraft:enchantments": [
+                {
+                  "enchantments": "minecraft:channeling"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

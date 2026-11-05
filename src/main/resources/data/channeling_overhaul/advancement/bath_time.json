@@ -1,0 +1,28 @@
+{
+  "parent": "channeling_overhaul:chain_reaction",
+  "display": {
+    "icon": {
+      "id": "minecraft:water_bucket"
+    },
+    "title": {
+      "translate": "advancements.channeling_overhaul.bath_time.title"
+    },
+    "description": {
+      "translate": "advancements.channeling_overhaul.bath_time.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "bath_time": {
+      "trigger": "channeling_overhaul:discharge",
+      "conditions": {
+        "water_kills": {
+          "min": 5
+        }
+      }
+    }
+  }
+}

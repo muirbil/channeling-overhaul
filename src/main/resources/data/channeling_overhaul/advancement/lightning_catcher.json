@@ -1,0 +1,26 @@
+{
+  "parent": "channeling_overhaul:fully_charged",
+  "display": {
+    "icon": {
+      "id": "minecraft:lightning_rod"
+    },
+    "title": {
+      "translate": "advancements.channeling_overhaul.lightning_catcher.title"
+    },
+    "description": {
+      "translate": "advancements.channeling_overhaul.lightning_catcher.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "lightning_catcher": {
+      "trigger": "channeling_overhaul:charge",
+      "conditions": {
+        "source": "lightning_rod"
+      }
+    }
+  }
+}
